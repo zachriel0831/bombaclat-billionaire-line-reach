@@ -1,0 +1,29 @@
+target/
+build/
+out/
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.mvn/wrapper/maven-wrapper.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / env
+.env
+.env.local
+.secrets/
+application-local.yml
+application-local.yaml
+application-local.properties
+
+# Logs
+*.log
+logs/
+
+# Test reports
+**/surefire-reports/
+**/failsafe-reports/

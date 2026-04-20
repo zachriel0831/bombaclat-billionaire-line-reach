@@ -1,0 +1,9 @@
+line:
+  channel-secret: test-secret-dummy
+  channel-access-token: test-token-dummy
+  api-base: https://api.line.me
+
+logging:
+  level:
+    root: WARN
+    com.zack.linerelay: DEBUG
