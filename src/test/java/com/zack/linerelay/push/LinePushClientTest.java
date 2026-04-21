@@ -2,6 +2,7 @@ package com.zack.linerelay.push;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zack.linerelay.config.LineProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -22,19 +23,30 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 class LinePushClientTest {
 
     private MockRestServiceServer server;
-    private LinePushClient client;
+    private RestClient.Builder builder;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
-        RestClient.Builder builder = RestClient.builder()
+        builder = RestClient.builder()
                 .baseUrl("https://api.line.me")
                 .defaultHeader("Authorization", "Bearer test-token")
                 .defaultHeader("Content-Type", "application/json");
         MockRestServiceServer.MockRestServiceServerBuilder serverBuilder =
                 MockRestServiceServer.bindTo(builder);
         server = serverBuilder.build();
-        client = new LinePushClient(builder.build());
+    }
+
+    private LinePushClient enabledClient() {
+        LineProperties props = new LineProperties(
+                "s", "t", null, new LineProperties.Push(true), null);
+        return new LinePushClient(builder.build(), props);
+    }
+
+    private LinePushClient disabledClient() {
+        LineProperties props = new LineProperties(
+                "s", "t", null, new LineProperties.Push(false), null);
+        return new LinePushClient(builder.build(), props);
     }
 
     @Test
@@ -51,7 +63,7 @@ class LinePushClientTest {
                     return withSuccess().createResponse(request);
                 });
 
-        client.push("U123", "hello");
+        enabledClient().push("U123", "hello");
         server.verify();
     }
 
@@ -65,12 +77,13 @@ class LinePushClientTest {
                     return withSuccess().createResponse(request);
                 });
 
-        client.push("U123", longText);
+        enabledClient().push("U123", longText);
         server.verify();
     }
 
     @Test
     void pushFailsForBlankTarget() {
+        LinePushClient client = enabledClient();
         assertThrows(IllegalArgumentException.class, () -> client.push("", "hi"));
         assertThrows(IllegalArgumentException.class, () -> client.push(null, "hi"));
     }
@@ -84,7 +97,7 @@ class LinePushClientTest {
                     return withSuccess().createResponse(request);
                 });
 
-        client.multicast(List.of("U1", "U2", "U3"), "hi");
+        enabledClient().multicast(List.of("U1", "U2", "U3"), "hi");
         server.verify();
     }
 
@@ -99,7 +112,7 @@ class LinePushClientTest {
         server.expect(requestTo("https://api.line.me/v2/bot/message/multicast"))
                 .andRespond(withSuccess());
 
-        client.multicast(targets, "hi");
+        enabledClient().multicast(targets, "hi");
         server.verify();
     }
 
@@ -109,6 +122,7 @@ class LinePushClientTest {
                 .andRespond(withStatus(org.springframework.http.HttpStatus.UNAUTHORIZED)
                         .body("{\"message\":\"Invalid token\"}"));
 
+        LinePushClient client = enabledClient();
         assertThrows(org.springframework.web.client.RestClientResponseException.class,
                 () -> client.push("U123", "hi"));
         server.verify();
@@ -116,9 +130,29 @@ class LinePushClientTest {
 
     @Test
     void multicastFailsForEmptyTargets() {
+        LinePushClient client = enabledClient();
         assertThrows(IllegalArgumentException.class,
                 () -> client.multicast(List.of(), "hi"));
         assertThrows(IllegalArgumentException.class,
                 () -> client.multicast(null, "hi"));
+    }
+
+    @Test
+    void pushSkippedWhenDisabled() {
+        // no server expectation set — if push attempts HTTP, MockRestServiceServer.verify() will fail
+        disabledClient().push("U123", "hello");
+        server.verify();
+    }
+
+    @Test
+    void multicastSkippedWhenDisabled() {
+        disabledClient().multicast(List.of("U1", "U2"), "hello");
+        server.verify();
+    }
+
+    @Test
+    void isPushEnabledReflectsConfig() {
+        assertEquals(true, enabledClient().isPushEnabled());
+        assertEquals(false, disabledClient().isPushEnabled());
     }
 }

@@ -4,11 +4,25 @@ server:
 spring:
   application:
     name: line-relay-service
+  datasource:
+    url: ${LINE_RELAY_MYSQL_URL:jdbc:mysql://localhost:3306/news_relay?useSSL=false&serverTimezone=UTC&characterEncoding=utf8mb4}
+    username: ${LINE_RELAY_MYSQL_USER:}
+    password: ${LINE_RELAY_MYSQL_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: ${LINE_RELAY_MYSQL_CONNECT_TIMEOUT_MS:5000}
 
 line:
   channel-secret: ${LINE_CHANNEL_SECRET:}
   channel-access-token: ${LINE_CHANNEL_ACCESS_TOKEN:}
   api-base: ${LINE_API_BASE:https://api.line.me}
+  push:
+    enabled: ${LINE_PUSH_ENABLED:false}
+  mysql:
+    enabled: ${LINE_RELAY_MYSQL_ENABLED:false}
+    analysis-table: ${LINE_RELAY_MYSQL_ANALYSIS_TABLE:t_market_analyses}
+    group-table: ${LINE_RELAY_MYSQL_GROUP_TABLE:t_bot_group_info}
+    user-table: ${LINE_RELAY_MYSQL_USER_TABLE:t_bot_user_info}
 
 logging:
   level:

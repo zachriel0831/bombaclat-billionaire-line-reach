@@ -16,7 +16,7 @@ class SignatureVerifierTest {
     private static final String SECRET = "test-channel-secret";
 
     private final SignatureVerifier verifier = new SignatureVerifier(
-            new LineProperties(SECRET, "dummy-token", null)
+            new LineProperties(SECRET, "dummy-token", null, null, null)
     );
 
     @Test

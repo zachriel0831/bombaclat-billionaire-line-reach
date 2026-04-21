@@ -35,7 +35,7 @@ class WebhookControllerTest {
     static class TestBeans {
         @Bean
         SignatureVerifier signatureVerifier() {
-            return new SignatureVerifier(new com.zack.linerelay.config.LineProperties(SECRET, "token", null));
+            return new SignatureVerifier(new com.zack.linerelay.config.LineProperties(SECRET, "token", null, null, null));
         }
     }
 

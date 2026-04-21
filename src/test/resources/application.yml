@@ -2,6 +2,16 @@ line:
   channel-secret: test-secret-dummy
   channel-access-token: test-token-dummy
   api-base: https://api.line.me
+  push:
+    enabled: false
+  mysql:
+    enabled: false
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
 
 logging:
   level:
