@@ -1,0 +1,262 @@
+package com.zack.linerelay.webhook;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zack.linerelay.db.BotTargetRepository;
+import com.zack.linerelay.market.MarketAnalysisPoller;
+import com.zack.linerelay.push.PushModeService;
+import com.zack.linerelay.stock.StockQueryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.stereotype.Component;
+
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Converts verified LINE webhook events into database target state changes and
+ * runtime push commands.
+ */
+@Component
+public class WebhookEventProcessor {
+
+    private static final Logger log = LoggerFactory.getLogger(WebhookEventProcessor.class);
+    private static final String TEST_MODE_PREFIX = "測試西卡卡";
+    private static final String DISABLE_PUSH_PREFIX = "關閉西卡卡";
+    private static final String PUSH_LATEST_TEST_PREFIX = "西卡卡推送";
+
+    private final BotTargetRepository repository;
+    private final MarketAnalysisPoller poller;
+    private final PushModeService pushModeService;
+    private final StockQueryService stockQueryService;
+
+    public WebhookEventProcessor(
+            ObjectProvider<BotTargetRepository> repositoryProvider,
+            ObjectProvider<MarketAnalysisPoller> pollerProvider,
+            PushModeService pushModeService,
+            ObjectProvider<StockQueryService> stockQueryServiceProvider
+    ) {
+        this.repository = repositoryProvider.getIfAvailable();
+        this.poller = pollerProvider.getIfAvailable();
+        this.pushModeService = pushModeService;
+        this.stockQueryService = stockQueryServiceProvider.getIfAvailable();
+    }
+
+    /**
+     * Processes one LINE webhook batch. State changes are collected first so
+     * duplicate events in the same batch collapse to the final intended active
+     * state before writing to the database.
+     */
+    public Summary process(JsonNode events) {
+        Map<String, Boolean> userStates = new LinkedHashMap<>();
+        Map<String, Boolean> groupStates = new LinkedHashMap<>();
+        int commands = 0;
+
+        if (events != null && events.isArray()) {
+            for (JsonNode event : events) {
+                collectState(event, userStates, groupStates);
+                if (handleCommand(event)) {
+                    commands++;
+                }
+            }
+        }
+
+        int activeUsers = 0;
+        int inactiveUsers = 0;
+        int activeGroups = 0;
+        int inactiveGroups = 0;
+
+        if (repository == null) {
+            if (!userStates.isEmpty() || !groupStates.isEmpty()) {
+                log.warn("LINE webhook received but MySQL store is disabled (users={} groups={})",
+                        userStates.size(), groupStates.size());
+            }
+        } else {
+            for (Map.Entry<String, Boolean> e : userStates.entrySet()) {
+                repository.upsertUser(e.getKey(), e.getValue());
+                if (e.getValue()) activeUsers++; else inactiveUsers++;
+            }
+            for (Map.Entry<String, Boolean> e : groupStates.entrySet()) {
+                repository.upsertGroup(e.getKey(), e.getValue());
+                if (e.getValue()) activeGroups++; else inactiveGroups++;
+            }
+        }
+
+        int eventCount = events != null && events.isArray() ? events.size() : 0;
+        log.info("webhook_processed events={} users={} groups={} active_users={} inactive_users={} active_groups={} inactive_groups={} commands={}",
+                eventCount, userStates.size(), groupStates.size(),
+                activeUsers, inactiveUsers, activeGroups, inactiveGroups, commands);
+
+        return new Summary(eventCount, userStates.size(), groupStates.size(),
+                activeUsers, inactiveUsers, activeGroups, inactiveGroups, commands);
+    }
+
+    /**
+     * Extracts user/group active-state hints from a single LINE event. The maps
+     * act as a small unit-of-work before repository writes happen.
+     */
+    private void collectState(JsonNode event, Map<String, Boolean> userStates, Map<String, Boolean> groupStates) {
+        if (event == null || !event.isObject()) {
+            return;
+        }
+        JsonNode source = event.path("source");
+        if (!source.isObject()) {
+            return;
+        }
+
+        String eventType = event.path("type").asText("").trim().toLowerCase(Locale.ROOT);
+        String sourceType = source.path("type").asText("").trim().toLowerCase(Locale.ROOT);
+        String userId = source.path("userId").asText("").trim();
+        String groupId = source.path("groupId").asText("").trim();
+        String roomId = source.path("roomId").asText("").trim();
+
+        // Any event carrying a userId is enough evidence that the user can be
+        // considered active unless a later event in the same batch says otherwise.
+        if (!userId.isEmpty()) {
+            userStates.putIfAbsent(userId, true);
+        }
+
+        // Room IDs are stored through the same group table because LINE push
+        // targets behave similarly for this service's purposes.
+        String groupOrRoomId = !groupId.isEmpty() ? groupId : roomId;
+        if (!groupOrRoomId.isEmpty()) {
+            groupStates.putIfAbsent(groupOrRoomId, true);
+        }
+
+        StringBuilder joinedUserLog = new StringBuilder();
+        if ("memberjoined".equals(eventType)) {
+            JsonNode members = event.path("joined").path("members");
+            if (members.isArray()) {
+                for (JsonNode member : members) {
+                    String joinedUserId = member.path("userId").asText("").trim();
+                    if (joinedUserId.isEmpty()) continue;
+                    userStates.put(joinedUserId, true);
+                    if (joinedUserLog.length() > 0) joinedUserLog.append(',');
+                    joinedUserLog.append(joinedUserId);
+                }
+            }
+        }
+
+        switch (eventType) {
+            case "join", "memberjoined" -> {
+                if (!groupOrRoomId.isEmpty()) {
+                    groupStates.put(groupOrRoomId, true);
+                }
+                log.info("[LINE_GROUP_JOIN] event_type={} source_type={} group_id={} user_id={} joined_user_ids={}",
+                        dash(eventType), dash(sourceType), dash(groupOrRoomId),
+                        dash(userId), joinedUserLog.length() == 0 ? "-" : joinedUserLog.toString());
+            }
+            case "leave" -> {
+                if (!groupOrRoomId.isEmpty()) {
+                    groupStates.put(groupOrRoomId, false);
+                }
+                log.info("[LINE_GROUP_LEAVE] source_type={} group_id={} user_id={}",
+                        dash(sourceType), dash(groupOrRoomId), dash(userId));
+            }
+            case "unfollow" -> {
+                if (!userId.isEmpty()) {
+                    userStates.put(userId, false);
+                }
+                log.info("[LINE_USER_UNFOLLOW] user_id={}", dash(userId));
+            }
+            case "follow" -> {
+                if (!userId.isEmpty()) {
+                    userStates.put(userId, true);
+                }
+                log.info("[LINE_USER_FOLLOW] user_id={}", dash(userId));
+            }
+            case "message" -> {
+                String msgType = event.path("message").path("type").asText("");
+                String text = event.path("message").path("text").asText("");
+                String messageId = event.path("message").path("id").asText("");
+                // This log is intentionally full-text to make local LINE command
+                // testing observable in the cmd window.
+                log.info("line_message_received source_type={} source_id={} user_id={} message_id={} msg_type={} text={}",
+                        dash(sourceType), dash(userId.isEmpty() ? groupOrRoomId : userId),
+                        dash(userId), dash(messageId), dash(msgType), dash(text));
+            }
+            case "memberleft" -> log.info("event=memberLeft {}={} members={}",
+                    dash(sourceType), dash(groupOrRoomId), event.path("left").path("members"));
+            default -> log.info("event={} source={}:{} user_id={}",
+                    dash(eventType), dash(sourceType), dash(groupOrRoomId.isEmpty() ? userId : groupOrRoomId),
+                    dash(userId));
+        }
+    }
+
+    /**
+     * Applies runtime text commands. Matching by prefix allows operators to add
+     * short notes after the command without breaking recognition.
+     */
+    private boolean handleCommand(JsonNode event) {
+        if (event == null || !event.isObject()) {
+            return false;
+        }
+        String eventType = event.path("type").asText("").trim().toLowerCase(Locale.ROOT);
+        if (!"message".equals(eventType)) {
+            return false;
+        }
+        JsonNode message = event.path("message");
+        String msgType = message.path("type").asText("").trim().toLowerCase(Locale.ROOT);
+        if (!"text".equals(msgType)) {
+            return false;
+        }
+        String text = message.path("text").asText("").trim();
+        if (text.startsWith(TEST_MODE_PREFIX)) {
+            log.info("line_message_command matched=test_mode prefix={}", TEST_MODE_PREFIX);
+            pushModeService.enableTestMode("line_webhook");
+            return true;
+        }
+        if (text.startsWith(DISABLE_PUSH_PREFIX)) {
+            log.info("line_message_command matched=disable_push prefix={}", DISABLE_PUSH_PREFIX);
+            pushModeService.disableAllPushes("line_webhook");
+            return true;
+        }
+        if (text.startsWith(PUSH_LATEST_TEST_PREFIX)) {
+            log.info("line_message_command matched=push_latest_test prefix={}", PUSH_LATEST_TEST_PREFIX);
+            if (poller == null) {
+                log.warn("manual_market_analysis_push skipped reason=poller_unavailable");
+            } else {
+                poller.pushLatestToTestAccountsNow();
+            }
+            return true;
+        }
+        if (stockQueryService != null && stockQueryService.handle(sourceTargetId(event), text)) {
+            log.info("line_message_command matched=stock_query");
+            return true;
+        }
+        return false;
+    }
+
+    private String sourceTargetId(JsonNode event) {
+        JsonNode source = event.path("source");
+        String sourceType = source.path("type").asText("").trim().toLowerCase(Locale.ROOT);
+        return switch (sourceType) {
+            case "group" -> source.path("groupId").asText("").trim();
+            case "room" -> source.path("roomId").asText("").trim();
+            default -> source.path("userId").asText("").trim();
+        };
+    }
+
+    /**
+     * Keeps log fields readable when LINE omits an ID.
+     */
+    private static String dash(String v) {
+        return v == null || v.isEmpty() ? "-" : v;
+    }
+
+    /**
+     * Batch processing summary returned to the webhook controller for observable
+     * response counts and tests.
+     */
+    public record Summary(
+            int events,
+            int users,
+            int groups,
+            int activeUsers,
+            int inactiveUsers,
+            int activeGroups,
+            int inactiveGroups,
+            int commands
+    ) {}
+}

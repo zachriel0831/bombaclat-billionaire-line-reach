@@ -1,11 +1,31 @@
 line:
+  # Dummy test credentials: unit tests verify behavior without real LINE secrets.
   channel-secret: test-secret-dummy
   channel-access-token: test-token-dummy
   api-base: https://api.line.me
   push:
+    # Test contexts default to dry-run style behavior.
     enabled: false
+    test-only: true
+    rate-limit:
+      enabled: false
+      public-analysis-daily-max-per-target: 2
+      stock-query-daily-max-per-target: 3
+      zone: Asia/Taipei
+      key-prefix: line:test:push:rate-limit
   mysql:
+    # Repository slice tests opt in with their own H2 context.
     enabled: false
+  schedule:
+    # Disabled in broad tests; scheduler unit tests call methods directly.
+    enabled: false
+    zone: Asia/Taipei
+    us-close-cron: "0 10 5 * * SAT"
+    pre-tw-open-cron: "0 40 7 * * *"
+    weekly-tw-preopen-cron: "0 10 5 * * SUN"
+    disable-stale-unpushed-cron: "0 15 0 * * *"
+    tw-market-holidays: ""
+    us-market-holidays: ""
 
 spring:
   autoconfigure:

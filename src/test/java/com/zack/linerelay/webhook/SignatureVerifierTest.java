@@ -11,6 +11,10 @@ import java.util.Base64;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Verifies LINE signature behavior against real HMAC generation instead of
+ * hardcoded strings.
+ */
 class SignatureVerifierTest {
 
     private static final String SECRET = "test-channel-secret";
@@ -59,6 +63,7 @@ class SignatureVerifierTest {
     }
 
     private static String sign(String secret, byte[] body) throws Exception {
+        // Test-only helper that mirrors LINE's signature generation.
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
         return Base64.getEncoder().encodeToString(mac.doFinal(body));

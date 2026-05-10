@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ngrok version *)",
+      "Bash(ls /c/ngrok*)",
+      "Read(//c/Program Files/**)",
+      "Bash(ls /d/ngrok*.exe)",
+      "Read(//d/Program Files/**)"
+    ]
+  }
+}

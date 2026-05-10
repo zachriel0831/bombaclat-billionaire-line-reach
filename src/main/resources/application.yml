@@ -1,11 +1,24 @@
 server:
+  # Local default. Override with PORT when running behind another process manager.
   port: ${PORT:8080}
 
 spring:
+  config:
+    # Lets direct `java -jar` startup read repo-local secrets/settings without
+    # requiring shell-specific environment setup.
+    import: optional:file:.env[.properties]
   application:
     name: line-relay-service
+  data:
+    redis:
+      # Rate limiting uses Redis only when line.push.rate-limit.enabled=true.
+      host: ${SPRING_DATA_REDIS_HOST:127.0.0.1}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      timeout: ${SPRING_DATA_REDIS_TIMEOUT:3000ms}
   datasource:
-    url: ${LINE_RELAY_MYSQL_URL:jdbc:mysql://localhost:3306/news_relay?useSSL=false&serverTimezone=UTC&characterEncoding=utf8mb4}
+    # MySQL beans are only used when line.mysql.enabled=true, but Boot still
+    # needs a complete datasource configuration when JDBC auto-configures.
+    url: ${LINE_RELAY_MYSQL_URL:jdbc:mysql://localhost:3306/news_relay?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8}
     username: ${LINE_RELAY_MYSQL_USER:}
     password: ${LINE_RELAY_MYSQL_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,20 +26,57 @@ spring:
       connection-timeout: ${LINE_RELAY_MYSQL_CONNECT_TIMEOUT_MS:5000}
 
 line:
+  # Both values are validated as non-blank because receiving and sending LINE
+  # traffic without the real channel credentials is unsafe.
   channel-secret: ${LINE_CHANNEL_SECRET:}
   channel-access-token: ${LINE_CHANNEL_ACCESS_TOKEN:}
   api-base: ${LINE_API_BASE:https://api.line.me}
+  platform:
+    enabled: ${LINE_PLATFORM_ENABLED:true}
+    base-url: ${LINE_PLATFORM_BASE_URL:http://localhost:8081}
+    stock-signal-path: ${LINE_PLATFORM_STOCK_SIGNAL_PATH:/api/stock-signals/generate}
+  # Public frontend analyses list URL. When set, LINE market-analysis pushes
+  # include a short excerpt plus a direct detail link under this path.
+  public-analysis-base-url: ${LINE_PUBLIC_ANALYSIS_BASE_URL:}
   push:
-    enabled: ${LINE_PUSH_ENABLED:false}
+    # Normal scheduled/admin pushes use this toggle. The manual latest-test
+    # command has its own test-only path and intentionally bypasses this value.
+    enabled: ${LINE_PUSH_ENABLED:true}
+    # Default to the safer target set: active test users only, no groups.
+    test-only: ${LINE_PUSH_TEST_ONLY:true}
+    rate-limit:
+      enabled: ${LINE_PUSH_RATE_LIMIT_ENABLED:false}
+      public-analysis-daily-max-per-target: ${LINE_PUSH_PUBLIC_ANALYSIS_DAILY_MAX_PER_TARGET:2}
+      stock-query-daily-max-per-target: ${LINE_PUSH_STOCK_QUERY_DAILY_MAX_PER_TARGET:3}
+      zone: ${LINE_PUSH_RATE_LIMIT_ZONE:${LINE_SCHEDULE_ZONE:Asia/Taipei}}
+      key-prefix: ${LINE_PUSH_RATE_LIMIT_KEY_PREFIX:line:push:rate-limit}
+  stock-signal-cache:
+    enabled: ${LINE_STOCK_SIGNAL_CACHE_ENABLED:true}
+    key-prefix: ${LINE_STOCK_SIGNAL_CACHE_KEY_PREFIX:line:stock-signal:cache}
+    ttl: ${LINE_STOCK_SIGNAL_CACHE_TTL:6h}
   mysql:
+    # Gates repository, poller, scheduler, and admin DB endpoints.
     enabled: ${LINE_RELAY_MYSQL_ENABLED:false}
     analysis-table: ${LINE_RELAY_MYSQL_ANALYSIS_TABLE:t_market_analyses}
     group-table: ${LINE_RELAY_MYSQL_GROUP_TABLE:t_bot_group_info}
     user-table: ${LINE_RELAY_MYSQL_USER_TABLE:t_bot_user_info}
+    trade-signal-table: ${LINE_RELAY_MYSQL_TRADE_SIGNAL_TABLE:t_trade_signals}
+  schedule:
+    # Cron expressions are evaluated in this zone, not the machine default.
+    enabled: ${LINE_SCHEDULE_ENABLED:true}
+    zone: ${LINE_SCHEDULE_ZONE:Asia/Taipei}
+    us-close-cron: ${LINE_SCHEDULE_US_CLOSE_CRON:0 10 5 * * SAT}
+    pre-tw-open-cron: ${LINE_SCHEDULE_PRE_TW_OPEN_CRON:0 40 7 * * *}
+    weekly-tw-preopen-cron: ${LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON:0 10 5 * * SUN}
+    disable-stale-unpushed-cron: ${LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON:0 0 0 * * *}
+    tw-market-holidays: ${LINE_SCHEDULE_TW_MARKET_HOLIDAYS:}
+    us-market-holidays: ${LINE_SCHEDULE_US_MARKET_HOLIDAYS:}
 
 logging:
   level:
-    root: INFO
-    com.zack.linerelay: INFO
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.zack.linerelay: ${LOGGING_LEVEL_COM_ZACK_LINERELAY:INFO}
+    org.springframework.web: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB:WARN}
+    org.springframework.jdbc.core: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_JDBC_CORE:WARN}
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"

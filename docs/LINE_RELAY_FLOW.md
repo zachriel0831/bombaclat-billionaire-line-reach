@@ -1,0 +1,140 @@
+# LINE Relay Service Flow
+
+## Purpose
+
+`line-relay-service` is the Java owner for LINE webhook intake and market-analysis push delivery. It keeps LINE user/group target rows current, reads prepared summaries from MySQL, and sends LINE push messages under explicit safety toggles.
+
+If Redis rate limiting is enabled, the same service also enforces a shared per-target daily push cap before any LINE HTTP call is made. Quotas are split by `PushMessageType`: `PUBLIC_ANALYSIS` currently allows 2 per target per day, while `STOCK_QUERY` allows 3.
+
+## Local Startup
+
+1. Put credentials and DB settings in `.env`. The app loads it through `spring.config.import=optional:file:.env[.properties]`.
+2. Build or run with JDK 21.
+
+```powershell
+$env:JAVA_HOME='C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot'
+$env:PATH="$env:JAVA_HOME\bin;$env:PATH"
+.\mvnw.cmd test
+.\mvnw.cmd package -DskipTests
+java -jar target\line-relay-service-0.1.0-SNAPSHOT.jar
+```
+
+3. Confirm startup:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/health
+Invoke-RestMethod http://localhost:8080/admin/list-targets
+```
+
+## Webhook Flow
+
+1. LINE sends `POST /webhook` with raw JSON and `X-Line-Signature`.
+2. `WebhookController` verifies the raw body before parsing JSON.
+3. `WebhookEventProcessor` reads each event:
+   - `follow`, `message`, `join`, `memberJoined` mark users/groups active.
+   - `unfollow`, `leave` mark users/groups inactive.
+   - `memberJoined` also records joined member user IDs.
+4. If MySQL-backed repositories are available, `BotTargetRepository` upserts rows into `t_bot_user_info` and `t_bot_group_info`.
+
+## Runtime Commands
+
+Text messages are matched by prefix:
+
+- `測試西卡卡`: set runtime mode to push enabled and test-only.
+- `關閉西卡卡`: disable normal push delivery.
+- `西卡卡推送`: fetch the latest `t_market_analyses` row and immediately push it to active test users only.
+- `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, `西卡卡股票 <代號>`: reply to the source user/group with the newest active row from `t_trade_signals`.
+- `股價分析 <代號或名稱>`: free-form analysis query, e.g. `股價分析 Rocket Lab (RKLB)`. Must have a half-width or full-width space between the prefix and the content; the entire trimmed remainder is sent as the query and the local Redis stock-signal cache is bypassed.
+
+The command state is in memory. Restarting the service reloads initial values from `.env` / `application.yml`.
+
+## Stock Query Flow
+
+1. `WebhookEventProcessor` detects a stock-query prefix and resolves the reply target from the LINE source (`groupId`, `roomId`, or `userId`).
+2. For ticker prefixes (`股票`, `個股`, `查股`, `西卡卡股票`), `StockQueryService` extracts the first token and normalizes symbols such as `2330.TW` to `2330`.
+3. For the free-form analysis prefix `股價分析`, `StockQueryService` keeps the entire trimmed remainder (e.g. `Rocket Lab (RKLB)`) and skips the local Redis cache; the platform model is responsible for resolving names to tickers.
+4. Ticker-mode queries check Redis key `line:stock-signal:cache:<ticker>` and reuse the previous successful reply when present.
+5. On cache miss (or always for the free-form analysis route), `PlatformStockSignalClient` calls `news-platform-api` using `LINE_PLATFORM_BASE_URL` and `LINE_PLATFORM_STOCK_SIGNAL_PATH`.
+6. `news-platform-api` generates the stock signal through the configured model. Stored analyses/signals/events are context only; LINE does not read `t_trade_signals` directly for the answer.
+7. Ticker-mode successful replies are cached in Redis for `LINE_STOCK_SIGNAL_CACHE_TTL`. Free-form analysis replies are not cached locally because the cache key normalizer collapses names like `Rocket Lab (RKLB)` into the same key as `RKLB`.
+8. `LinePushClient.push(STOCK_QUERY, ...)` sends the reply and applies the `STOCK_QUERY` Redis quota.
+
+The expected reply structure (主軸) for both routes lives in `skills/line-brief-format-skill/line-stock-analysis.md`.
+
+## Market Push Flow
+
+Scheduled or admin-triggered pushes use the same path:
+
+1. `MarketAnalysisScheduler` or `AdminController` calls `MarketAnalysisPoller.pollOnce`.
+2. `MarketAnalysisRepository.findLatest(date, slot)` selects the newest matching analysis where `push_enabled = 1`.
+3. `BotTargetRepository.listActiveTargets` applies current target rules.
+4. `MarketAnalysisPoller` formats the LINE text. When `LINE_PUBLIC_ANALYSIS_BASE_URL` is set, it sends a short first-paragraph excerpt plus a detail URL like `/analyses/{id}`; otherwise it falls back to `<date>` plus full summary text.
+5. `LinePushClient.push(PUBLIC_ANALYSIS, ...)` sends to each resolved target when `LINE_PUSH_ENABLED=true`.
+   - When Redis rate limiting is enabled, each LINE target ID is capped by Taipei business date and message type before the HTTP request is sent.
+6. If at least one target receives the message, `MarketAnalysisRepository.markPushed` updates that row to `pushed = 1`.
+
+Manual command push is different on purpose:
+
+1. `西卡卡推送` calls `MarketAnalysisPoller.pushLatestToTestAccountsNow`.
+2. The repository selects the newest row across all dates/slots.
+3. Only `t_bot_user_info.active = 1 AND test_account = 1` users are selected.
+4. `LinePushClient.pushIgnoringToggle(PUBLIC_ANALYSIS, ...)` sends even if normal push is off.
+   - The master push toggle is bypassed here, but Redis rate limiting still applies.
+5. No pushed flag or queue state is updated.
+
+## Redis Quota Keys
+
+The Redis key format is:
+
+```text
+line:push:rate-limit:<yyyy-MM-dd>:<PushMessageType>:<targetId>
+```
+
+Current daily limits:
+
+- `PUBLIC_ANALYSIS`: `2`
+- `STOCK_QUERY`: `3`
+
+## Default Schedules
+
+With `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`:
+
+- TW open + relevant U.S. close session open: `pre_tw_open` on weekdays; Saturday `05:10 Asia/Taipei` pushes `us_close`
+- TW closed + relevant U.S. close session open: `us_close`
+- TW open + relevant U.S. close session closed: `pre_tw_open`
+- TW closed + relevant U.S. close session closed: `macro_daily`
+- Sunday `05:10 Asia/Taipei`: `weekly_tw_preopen`; daily market-analysis push is skipped
+- `00:00 Asia/Taipei`: disable stale rows where `analysis_date` is before today, `pushed = 0`, and `push_enabled = 1`.
+
+Override using `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, and `LINE_SCHEDULE_ZONE`.
+
+## LINE Console Setup
+
+For this Java service:
+
+```powershell
+ngrok http 8080
+```
+
+Set LINE Console Webhook URL to:
+
+```text
+https://<ngrok-host>/webhook
+```
+
+Do not point this service to the older Python path:
+
+```text
+https://<ngrok-host>/callback
+```
+
+If ngrok forwards to `18090`, requests are going to the Python relay, not this Java service.
+
+## Common Failures
+
+- No `line_message_received` log: webhook URL or ngrok port is wrong.
+- `401 invalid_signature`: channel secret mismatch, missing signature, or raw body changed before verification.
+- Push 403 from LINE: access token is invalid, reissued, from another channel, or lacks Messaging API access.
+- Redis rate limit errors: if `LINE_PUSH_RATE_LIMIT_ENABLED=true`, confirm Redis is reachable at the configured `SPRING_DATA_REDIS_*` host/port.
+- No targets: test mode is on but no active `test_account = 1` user exists.
+- Scheduled push appears skipped: no matching `analysis_date` / `analysis_slot` row exists, or the latest row has `push_enabled = 0`.

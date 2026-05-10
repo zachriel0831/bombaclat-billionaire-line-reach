@@ -10,6 +10,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+/**
+ * Verifies webhook authenticity using the LINE channel secret.
+ */
 @Component
 public class SignatureVerifier {
 
@@ -21,6 +24,11 @@ public class SignatureVerifier {
         this.channelSecretBytes = props.channelSecret().getBytes(StandardCharsets.UTF_8);
     }
 
+    /**
+     * Validates LINE's `X-Line-Signature` header using HMAC-SHA256 and constant
+     * time comparison. Returning false on malformed input keeps the controller's
+     * response path simple.
+     */
     public boolean verify(byte[] rawBody, String providedSignature) {
         if (providedSignature == null || providedSignature.isBlank() || rawBody == null) {
             return false;
@@ -30,6 +38,7 @@ public class SignatureVerifier {
             mac.init(new SecretKeySpec(channelSecretBytes, HMAC_ALGO));
             byte[] digest = mac.doFinal(rawBody);
             String expected = Base64.getEncoder().encodeToString(digest);
+            // Compare bytes in constant time to avoid leaking signature details.
             return MessageDigest.isEqual(
                     expected.getBytes(StandardCharsets.UTF_8),
                     providedSignature.getBytes(StandardCharsets.UTF_8)

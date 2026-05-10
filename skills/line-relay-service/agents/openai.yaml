@@ -1,0 +1,4 @@
+interface:
+  display_name: "Line Relay Service"
+  short_description: "Maintain the LINE webhook and market-analysis push service."
+  default_prompt: "Use this skill when changing, debugging, or operating the line-relay-service Spring Boot application."

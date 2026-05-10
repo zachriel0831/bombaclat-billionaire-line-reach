@@ -2,6 +2,9 @@ package com.zack.linerelay.db;
 
 import java.time.Instant;
 
+/**
+ * Immutable projection of one `t_market_analyses` row used by push rendering.
+ */
 public record MarketAnalysis(
         long id,
         String analysisDate,

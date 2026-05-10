@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/**
+ * HTTP boundary for LINE webhook callbacks.
+ */
 @RestController
 @RequestMapping("/webhook")
 public class WebhookController {
@@ -22,14 +25,21 @@ public class WebhookController {
 
     private final SignatureVerifier verifier;
     private final ObjectMapper objectMapper;
+    private final WebhookEventProcessor processor;
 
-    public WebhookController(SignatureVerifier verifier, ObjectMapper objectMapper) {
+    public WebhookController(SignatureVerifier verifier, ObjectMapper objectMapper, WebhookEventProcessor processor) {
         this.verifier = verifier;
         this.objectMapper = objectMapper;
+        this.processor = processor;
     }
 
+    /**
+     * Receives LINE webhook callbacks. Signature verification must happen on the
+     * exact raw request body, so parsing is intentionally delayed until after
+     * the HMAC check succeeds.
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> receive(
+    public ResponseEntity<Map<String, Object>> receive(
             @RequestHeader(value = "X-Line-Signature", required = false) String signature,
             @RequestBody byte[] rawBody
     ) {
@@ -39,54 +49,23 @@ public class WebhookController {
             return ResponseEntity.status(401).body(Map.of("error", "invalid_signature"));
         }
 
+        WebhookEventProcessor.Summary summary;
         try {
+            // The processor owns event semantics; the controller stays thin and
+            // only handles HTTP/signature/JSON boundaries.
             JsonNode root = objectMapper.readTree(rawBody);
-            JsonNode events = root.path("events");
-            int count = events.isArray() ? events.size() : 0;
-            log.info("Received {} LINE event(s)", count);
-            for (JsonNode event : events) {
-                logEvent(event);
-            }
+            summary = processor.process(root.path("events"));
         } catch (Exception e) {
             log.error("Failed to parse webhook body: {}", e.getMessage(), e);
             return ResponseEntity.status(400).body(Map.of("error", "invalid_body"));
         }
 
-        return ResponseEntity.ok(Map.of("status", "accepted"));
-    }
-
-    private void logEvent(JsonNode event) {
-        String type = event.path("type").asText("unknown");
-        JsonNode source = event.path("source");
-        String sourceType = source.path("type").asText("");
-        String sourceId = switch (sourceType) {
-            case "user" -> source.path("userId").asText("");
-            case "group" -> source.path("groupId").asText("");
-            case "room" -> source.path("roomId").asText("");
-            default -> "";
-        };
-
-        switch (type) {
-            case "message" -> {
-                String messageType = event.path("message").path("type").asText("");
-                String text = event.path("message").path("text").asText("");
-                log.info("event=message source={}:{} msg_type={} text_preview={}",
-                        sourceType, sourceId, messageType, preview(text));
-            }
-            case "follow" -> log.info("event=follow user={}", sourceId);
-            case "unfollow" -> log.info("event=unfollow user={}", sourceId);
-            case "join" -> log.info("event=join {}={}", sourceType, sourceId);
-            case "leave" -> log.info("event=leave {}={}", sourceType, sourceId);
-            case "memberJoined" -> log.info("event=memberJoined {}={} members={}",
-                    sourceType, sourceId, event.path("joined").path("members"));
-            case "memberLeft" -> log.info("event=memberLeft {}={} members={}",
-                    sourceType, sourceId, event.path("left").path("members"));
-            default -> log.info("event={} source={}:{} raw={}", type, sourceType, sourceId, event);
-        }
-    }
-
-    private String preview(String text) {
-        if (text == null) return "";
-        return text.length() > 120 ? text.substring(0, 120) + "..." : text;
+        return ResponseEntity.ok(Map.of(
+                "status", "accepted",
+                "events", summary.events(),
+                "users", summary.users(),
+                "groups", summary.groups(),
+                "commands", summary.commands()
+        ));
     }
 }

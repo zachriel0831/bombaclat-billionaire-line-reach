@@ -3,6 +3,7 @@ package com.zack.linerelay.admin;
 import com.zack.linerelay.config.LineProperties;
 import com.zack.linerelay.db.BotTargetRepository;
 import com.zack.linerelay.market.MarketAnalysisPoller;
+import com.zack.linerelay.push.PushModeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Internal operational endpoints for checking target resolution and manually
+ * running the market-analysis push workflow.
+ */
 @RestController
 @RequestMapping("/admin")
 @ConditionalOnProperty(prefix = "line.mysql", name = "enabled", havingValue = "true")
@@ -24,18 +29,22 @@ public class AdminController {
 
     private final BotTargetRepository targetRepo;
     private final MarketAnalysisPoller poller;
-    private final LineProperties lineProperties;
+    private final PushModeService pushModeService;
 
     public AdminController(
             BotTargetRepository targetRepo,
             MarketAnalysisPoller poller,
-            LineProperties lineProperties
+            PushModeService pushModeService
     ) {
         this.targetRepo = targetRepo;
         this.poller = poller;
-        this.lineProperties = lineProperties;
+        this.pushModeService = pushModeService;
     }
 
+    /**
+     * Operational endpoint for verifying the exact roster that a push would use
+     * after active/test-only filtering has been applied.
+     */
     @GetMapping("/list-targets")
     public Map<String, Object> listTargets() {
         List<String> groups = targetRepo.listActiveGroupIds();
@@ -45,10 +54,15 @@ public class AdminController {
                 "groups", groups,
                 "users", users,
                 "total", groups.size() + users.size(),
-                "push_enabled", lineProperties.push() != null && lineProperties.push().enabled()
+                "push_enabled", pushModeService.isPushEnabled(),
+                "push_test_only", pushModeService.isPushTestOnly()
         );
     }
 
+    /**
+     * Manual trigger for the same path used by scheduled pushes. This is useful
+     * for smoke testing DB reads and LINE delivery without waiting for cron.
+     */
     @PostMapping("/poll-market-analysis")
     public MarketAnalysisPoller.PollResult pollMarketAnalysis(
             @RequestParam(name = "date", required = false) String analysisDate,
