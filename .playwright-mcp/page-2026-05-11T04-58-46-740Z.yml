@@ -1,0 +1,160 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Market Brief" [ref=e5] [cursor=pointer]:
+      - /url: /
+  - main [ref=e6]:
+    - generic [ref=e8]:
+      - paragraph [ref=e9]: Weekly analysis
+      - heading "Weekly market summaries" [level=1] [ref=e10]
+      - paragraph [ref=e11]: Sunday summaries from the weekly Taiwan pre-open analysis slot.
+    - generic [ref=e12]:
+      - generic [ref=e13]: Page 1 - 4 total
+      - generic [ref=e14]: End of list
+    - generic [ref=e15]:
+      - link "2026-05-10 weekly_tw_preopen 2026-05-10 market analysis Pushed 週總經 本週風險資產的主旋律是「AI帶動的科技風險偏好，上游地緣風險邊際緩和但仍有尾部」。美股以半導體與大型科技領漲，費半與那指走強，信用利差維持低檔，VIX約17，顯示風險承擔意願尚可；但等權重與小型股的相對表現偏弱，廣度收斂，是本輪上行的主要風險。台股呼應此架構：權值半導體分化（聯發科強於台積電），金融指數走高，集中市場小幅拉回。 政治與地緣面，本週烏俄在5月9–11日維持三日停火並搭配戰俘交換，短期降低歐陸軍事意外與能源運輸風險溢... 05:10 120 events · 0 market rows gpt-5" [ref=e16] [cursor=pointer]:
+        - /url: /analyses/42
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - generic [ref=e19]:
+              - generic [ref=e20]: 2026-05-10
+              - generic [ref=e21]: weekly_tw_preopen
+            - heading "2026-05-10 market analysis" [level=2] [ref=e22]
+          - generic [ref=e23]:
+            - img [ref=e24]
+            - text: Pushed
+        - paragraph [ref=e27]: 週總經 本週風險資產的主旋律是「AI帶動的科技風險偏好，上游地緣風險邊際緩和但仍有尾部」。美股以半導體與大型科技領漲，費半與那指走強，信用利差維持低檔，VIX約17，顯示風險承擔意願尚可；但等權重與小型股的相對表現偏弱，廣度收斂，是本輪上行的主要風險。台股呼應此架構：權值半導體分化（聯發科強於台積電），金融指數走高，集中市場小幅拉回。 政治與地緣面，本週烏俄在5月9–11日維持三日停火並搭配戰俘交換，短期降低歐陸軍事意外與能源運輸風險溢...
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - img [ref=e30]
+            - text: 05:10
+          - generic [ref=e34]:
+            - img [ref=e35]
+            - text: 120 events · 0 market rows
+          - generic [ref=e39]:
+            - img [ref=e40]
+            - text: gpt-5
+      - link "2026-05-03 weekly_tw_preopen 2026-05-03 market analysis Pushed 本週重點：白宮稱對伊朗的「敵對行動已終止」，但荷莫茲通行未明、能源壓力猶存；美對歐汽車關稅擬升至25%、並宣告6–12個月自德國撤軍5,000人，地緣與貿易風險疊加。另，Spirit 宣布即刻停運，凸顯高油價與融資環境對旅運業的壓力。 ([washingtonpost.com](https://www.washingtonpost.com/politics/2026/05/01/trump-iran-congressional-dead... 05:10 120 events · 0 market rows gpt-5" [ref=e43] [cursor=pointer]:
+        - /url: /analyses/32
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - generic [ref=e47]: 2026-05-03
+              - generic [ref=e48]: weekly_tw_preopen
+            - heading "2026-05-03 market analysis" [level=2] [ref=e49]
+          - generic [ref=e50]:
+            - img [ref=e51]
+            - text: Pushed
+        - paragraph [ref=e54]: 本週重點：白宮稱對伊朗的「敵對行動已終止」，但荷莫茲通行未明、能源壓力猶存；美對歐汽車關稅擬升至25%、並宣告6–12個月自德國撤軍5,000人，地緣與貿易風險疊加。另，Spirit 宣布即刻停運，凸顯高油價與融資環境對旅運業的壓力。 ([washingtonpost.com](https://www.washingtonpost.com/politics/2026/05/01/trump-iran-congressional-dead...
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - img [ref=e57]
+            - text: 05:10
+          - generic [ref=e61]:
+            - img [ref=e62]
+            - text: 120 events · 0 market rows
+          - generic [ref=e66]:
+            - img [ref=e67]
+            - text: gpt-5
+      - link "2026-04-26 weekly_tw_preopen 2026-04-26 market analysis Pushed 本週重點：華府白宮記者晚宴外傳槍擊，總統特朗普被緊急撤離、嫌犯被制伏，政治風險短線升溫；同時美股在科技與半導體帶動下再創收盤新高，油價回落舒緩通膨顧慮。([axios.com](https://www.axios.com/2026/04/26/trump-evacuated-whcd-secret-service?utm_source=openai)) 國際政治面：伊朗戰事斡旋受阻，特朗普取消派庫許納與Witkoff赴巴基斯坦，和平談判... 05:10 120 events · 0 market rows gpt-5" [ref=e70] [cursor=pointer]:
+        - /url: /analyses/20
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - generic [ref=e74]: 2026-04-26
+              - generic [ref=e75]: weekly_tw_preopen
+            - heading "2026-04-26 market analysis" [level=2] [ref=e76]
+          - generic [ref=e77]:
+            - img [ref=e78]
+            - text: Pushed
+        - paragraph [ref=e81]: 本週重點：華府白宮記者晚宴外傳槍擊，總統特朗普被緊急撤離、嫌犯被制伏，政治風險短線升溫；同時美股在科技與半導體帶動下再創收盤新高，油價回落舒緩通膨顧慮。([axios.com](https://www.axios.com/2026/04/26/trump-evacuated-whcd-secret-service?utm_source=openai)) 國際政治面：伊朗戰事斡旋受阻，特朗普取消派庫許納與Witkoff赴巴基斯坦，和平談判...
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - img [ref=e84]
+            - text: 05:10
+          - generic [ref=e88]:
+            - img [ref=e89]
+            - text: 120 events · 0 market rows
+          - generic [ref=e93]:
+            - img [ref=e94]
+            - text: gpt-5
+      - link "2026-W16 weekly_tw_preopen 2026-W16 market analysis Pending 本週重點：霍爾木茲海峽再度封閉，美歐北約關係緊張升溫，全球地緣政治風險加劇。中國機器人技術突破，展現科技競爭力。美國取消多項關稅，推動企業退稅，經濟政策轉向寬鬆。 國際政治面：伊朗封鎖霍爾木茲海峽，阻斷重要油運通道，引發能源市場擔憂。北約盟國在該區域的軍事合作引發美國前總統強烈反對，歐美關係出現裂痕。北韓持續發射彈道飛彈，東北亞安全局勢緊繃。 財經科技面：美國最高法院撤銷多項前任政府關稅，企業可申請退稅，短期內有助降低成本。中國機器人成... 07:30 20 events · 0 market rows gpt-4.1-mini" [ref=e97] [cursor=pointer]:
+        - /url: /analyses/3
+        - generic [ref=e98]:
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - generic [ref=e101]: 2026-W16
+              - generic [ref=e102]: weekly_tw_preopen
+            - heading "2026-W16 market analysis" [level=2] [ref=e103]
+          - generic [ref=e104]:
+            - img [ref=e105]
+            - text: Pending
+        - paragraph [ref=e108]: 本週重點：霍爾木茲海峽再度封閉，美歐北約關係緊張升溫，全球地緣政治風險加劇。中國機器人技術突破，展現科技競爭力。美國取消多項關稅，推動企業退稅，經濟政策轉向寬鬆。 國際政治面：伊朗封鎖霍爾木茲海峽，阻斷重要油運通道，引發能源市場擔憂。北約盟國在該區域的軍事合作引發美國前總統強烈反對，歐美關係出現裂痕。北韓持續發射彈道飛彈，東北亞安全局勢緊繃。 財經科技面：美國最高法院撤銷多項前任政府關稅，企業可申請退稅，短期內有助降低成本。中國機器人成...
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - img [ref=e111]
+            - text: 07:30
+          - generic [ref=e115]:
+            - img [ref=e116]
+            - text: 20 events · 0 market rows
+          - generic [ref=e120]:
+            - img [ref=e121]
+            - text: gpt-4.1-mini
+    - navigation "Pagination" [ref=e124]:
+      - generic [ref=e125]:
+        - generic [ref=e126]: Showing 1-4 of 4
+        - generic [ref=e127]: Page 1 of 1
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - img [ref=e130]
+          - text: Previous
+        - generic [ref=e133]: "1"
+        - generic [ref=e134]:
+          - text: Next
+          - img [ref=e135]
+  - navigation "主要分類" [ref=e137]:
+    - link "財經" [ref=e138] [cursor=pointer]:
+      - /url: /
+      - img [ref=e139]
+      - generic [ref=e144]: 財經
+    - link "名人動態" [ref=e145] [cursor=pointer]:
+      - /url: /celebrities
+      - img [ref=e146]
+      - generic [ref=e149]: 名人動態
+    - link "政治" [ref=e150] [cursor=pointer]:
+      - /url: /?category=politics
+      - img [ref=e151]
+      - generic [ref=e153]: 政治
+    - link "娛樂" [ref=e154] [cursor=pointer]:
+      - /url: /?category=entertainment
+      - img [ref=e155]
+      - generic [ref=e160]: 娛樂
+  - navigation "議題導覽" [ref=e161]:
+    - generic [ref=e162]:
+      - link "酒駕毒駕／車禍傷亡" [ref=e163] [cursor=pointer]:
+        - /url: /?category=society&topic=drunk_driving_accident
+        - img [ref=e164]
+        - generic [ref=e168]: 酒駕毒駕／車禍傷亡
+      - link "詐騙" [ref=e169] [cursor=pointer]:
+        - /url: /?category=society&topic=fraud
+        - img [ref=e170]
+        - generic [ref=e172]: 詐騙
+      - link "少子化" [ref=e173] [cursor=pointer]:
+        - /url: /?category=society&topic=low_birthrate
+        - img [ref=e174]
+        - generic [ref=e177]: 少子化
+      - link "司法量刑不公" [ref=e178] [cursor=pointer]:
+        - /url: /?category=society&topic=judicial_injustice
+        - img [ref=e179]
+        - generic [ref=e183]: 司法量刑不公
+      - link "醫護過勞／醫療崩潰" [ref=e184] [cursor=pointer]:
+        - /url: /?category=society&topic=healthcare_burden
+        - img [ref=e185]
+        - generic [ref=e189]: 醫護過勞／醫療崩潰
+      - link "高房價／居住正義" [ref=e190] [cursor=pointer]:
+        - /url: /?category=society&topic=housing_justice
+        - img [ref=e191]
+        - generic [ref=e194]: 高房價／居住正義
+      - link "新興毒品／校園毒品" [ref=e195] [cursor=pointer]:
+        - /url: /?category=society&topic=drug_abuse
+        - img [ref=e196]
+        - generic [ref=e199]: 新興毒品／校園毒品

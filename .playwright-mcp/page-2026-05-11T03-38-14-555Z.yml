@@ -1,0 +1,228 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Market Brief" [ref=e5] [cursor=pointer]:
+      - /url: /
+  - main [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - img [ref=e11]
+          - paragraph [ref=e13]: 社會新聞
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - heading "詐騙" [level=1] [ref=e16]
+            - paragraph [ref=e17]: 來自自由時報、ETtoday、TVBS 等公開來源的台灣社會新聞；可用議題追蹤快速切換到特定社會議題。
+          - generic [ref=e18]: 31 articles
+      - generic [ref=e19]:
+        - link [ref=e20] [cursor=pointer]:
+          - /url: https://www.ettoday.net/news/20260511/3163812.htm
+          - article [ref=e21]:
+            - generic [ref=e22]:
+              - paragraph [ref=e23]: ETtoday
+              - generic [ref=e24]:
+                - img [ref=e25]
+                - text: 05/11 03:05
+            - generic [ref=e30]: 詐騙
+            - heading "代買「員購賓士」私吞車款 女主管坑騙老同事背鍋594萬" [level=2] [ref=e31]
+            - paragraph [ref=e32]: 台灣賓士資融公司採購主任陳奕臻宣稱，可用員購低價代買賓士，再造假匯款私吞購車款，有客戶不滿交車延遲發脾氣，陳奕臻正擔心東窗事發，剛好有老同事想換車，陳奕臻竟誘騙老同事連付2次車款共594萬元，買1輛新車給不耐煩的客戶。台北地檢署依詐欺取財罪起訴陳奕臻和配合行騙的桃園展示中心副理張亦芸。 《詳全文...》
+            - generic [ref=e33]:
+              - text: 原文
+              - img [ref=e34]
+        - link [ref=e38] [cursor=pointer]:
+          - /url: https://www.ettoday.net/news/20260511/3163758.htm
+          - article [ref=e39]:
+            - generic [ref=e40]:
+              - paragraph [ref=e41]: ETtoday
+              - generic [ref=e42]:
+                - img [ref=e43]
+                - text: 05/11 02:00
+            - generic [ref=e48]: 司法量刑不公 +1
+            - heading "遭控洗不乾淨...男推銷「清潔萬能粉」挨告 6連勝關鍵曝" [level=2] [ref=e49]
+            - paragraph [ref=e50]: 陳姓男子向雜貨店老闆娘推銷「清潔萬能粉」，宣稱是鐵工廠專用強效清潔粉，並疑似安排假顧客營造熱銷假象，老闆娘花1萬元購入100包，事後客人反映洗不乾淨，老闆娘提告詐欺。陳男堅稱產品有效；法院認為，國內無檢驗標準可證明該粉「毫無清潔效果」，且告訴人未曾試用，陳男曾5度因類似手法獲不起訴處，該案一、二審皆判無罪確定。 《詳全文...》
+            - generic [ref=e51]:
+              - text: 原文
+              - img [ref=e52]
+        - link [ref=e56] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/breakingnews/5432570
+          - article [ref=e57]:
+            - generic [ref=e58]:
+              - paragraph [ref=e59]: 自由時報
+              - generic [ref=e60]:
+                - img [ref=e61]
+                - text: 05/11 01:52
+            - generic [ref=e66]: 詐騙
+            - heading "現役軍人賺外快當車手害13人 賺3千換判刑17年10月" [level=2] [ref=e67]
+            - paragraph [ref=e68]: 在軍中服役的邱男，2024年3月間加入詐團擔任提款車手，才賺3000元，造成13名被害人受害，總提領金額為73萬3千元，該案經彰化地院審理，法官認定邱男犯13罪，判處17年10...…
+            - generic [ref=e69]:
+              - text: 原文
+              - img [ref=e70]
+        - link [ref=e74] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/breakingnews/5432548
+          - article [ref=e75]:
+            - generic [ref=e76]:
+              - paragraph [ref=e77]: 自由時報
+              - generic [ref=e78]:
+                - img [ref=e79]
+                - text: 05/11 01:11
+            - generic [ref=e84]: 詐騙
+            - heading "架線路月賺7千 苗栗男當「詐團幫兇」被判刑" [level=2] [ref=e85]
+            - paragraph [ref=e86]: 苗栗縣一名徐姓男子，因貪圖每個月7000元的額外收入，竟將住處化身為詐騙集團的「電信轉接站」，協助架設自動轉接設備，導致一名無辜婦人誤入詐騙陷阱。苗栗地院法官近期審理後，認定徐...…
+            - generic [ref=e87]:
+              - text: 原文
+              - img [ref=e88]
+        - link [ref=e92] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/paper/1754365
+          - article [ref=e93]:
+            - generic [ref=e94]:
+              - paragraph [ref=e95]: 自由時報
+              - generic [ref=e96]:
+                - img [ref=e97]
+                - text: 05/10 21:30
+            - generic [ref=e102]: 司法量刑不公 +1
+            - heading "律師︰廣告不實 可循消保法求償" [level=2] [ref=e103]
+            - paragraph [ref=e104]: 〔記者顏宏駿／彰化報導〕陳姓男子將「清潔萬能粉」賣給彰化市某雜貨店，因產品「不起泡、洗不乾淨」，雜貨店老闆告詐欺，法院判決陳男無罪確定。曾任彰化地檢署檢察官的執業律師鄭智文說，該案無罪的關鍵在於，我國並無一套「清潔劑是否有效的檢測標準」，對於消費者購買到與宣傳不符的劣質品，鄭智文建議，可依《消費者保…
+            - generic [ref=e105]:
+              - text: 原文
+              - img [ref=e106]
+        - link [ref=e110] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/paper/1754364
+          - article [ref=e111]:
+            - generic [ref=e112]:
+              - paragraph [ref=e113]: 自由時報
+              - generic [ref=e114]:
+                - img [ref=e115]
+                - text: 05/10 21:30
+            - generic [ref=e120]: 司法量刑不公 +1
+            - heading "賣洗不乾淨萬能粉 挨告6次都過關" [level=2] [ref=e121]
+            - paragraph [ref=e122]: 10幾年5度不起訴1次無罪 法官︰台灣無檢驗標準 〔記者顏宏駿、張瑞楨／彰化報導〕陳姓男子四十多年前購入一批「清潔萬能粉」，他巡迴全台兜售，因「洗不乾淨」被告詐欺罪五次，全部不起訴處分，二〇二二年他又與身分不詳男子到彰化市一家雜貨店，唱做俱佳推銷後，老闆花一萬元進貨一百包，客人卻反映「不起泡、洗不…
+            - generic [ref=e123]:
+              - text: 原文
+              - img [ref=e124]
+        - link [ref=e128] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/breakingnews/5432409
+          - article [ref=e129]:
+            - generic [ref=e130]:
+              - paragraph [ref=e131]: 自由時報
+              - generic [ref=e132]:
+                - img [ref=e133]
+                - text: 05/10 14:54
+            - generic [ref=e138]: 司法量刑不公 +1
+            - heading "40年前「清潔萬能粉」無效挨告詐欺 律師點出無罪關鍵" [level=2] [ref=e139]
+            - paragraph [ref=e140]: 一名陳姓男子40年前購得「清潔萬能粉」，全台兜售，因無效果，發生多起消費糾紛，彰化檢方依詐欺取財罪提起公訴，無罪定讞。曾任彰化地檢署檢察官的執業律師鄭智文說，該案無罪的關鍵在於...…
+            - generic [ref=e141]:
+              - text: 原文
+              - img [ref=e142]
+        - link [ref=e146] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/breakingnews/5432366
+          - article [ref=e147]:
+            - generic [ref=e148]:
+              - paragraph [ref=e149]: 自由時報
+              - generic [ref=e150]:
+                - img [ref=e151]
+                - text: 05/10 13:31
+            - generic [ref=e156]: 司法量刑不公 +1
+            - heading "兜售40年前「萬能清潔粉」無效挨告 男詐欺無罪定讞理由曝" [level=2] [ref=e157]
+            - paragraph [ref=e158]: 一名陳姓男子開著藍色小貨滿載40多年前購買的「清潔萬能粉」巡迴全台，卻因「洗不乾淨」被店家提告財欺取財，但最後都不起訴。最近他來到彰化市某雜貨店，以每包100元向雜貨店兜售，推...…
+            - generic [ref=e159]:
+              - text: 原文
+              - img [ref=e160]
+        - link [ref=e164] [cursor=pointer]:
+          - /url: https://news.ltn.com.tw/news/society/breakingnews/5432334
+          - article [ref=e165]:
+            - generic [ref=e166]:
+              - paragraph [ref=e167]: 自由時報
+              - generic [ref=e168]:
+                - img [ref=e169]
+                - text: 05/10 12:50
+            - generic [ref=e174]: 詐騙
+            - heading "賣手機門號詐貴婦賺6千 她遭判賠384萬！" [level=2] [ref=e175]
+            - paragraph [ref=e176]: 新竹賴姓貴婦誤信詐團投資騙術，共遭騙走1億6千萬鉅款，檢警回溯金流追查發現，其中有384萬元流向彭女手機門號申請的加密貨幣錢包，賴女因此提告要求賠償，彭女聲稱賣幾個門號才收到6...…
+            - generic [ref=e177]:
+              - text: 原文
+              - img [ref=e178]
+        - link [ref=e182] [cursor=pointer]:
+          - /url: https://news.pts.org.tw/article/807660
+          - article [ref=e183]:
+            - generic [ref=e184]:
+              - paragraph [ref=e185]: pts
+              - generic [ref=e186]:
+                - img [ref=e187]
+                - text: 05/10 11:24
+            - generic [ref=e192]: 詐騙
+            - heading "電話轉接功能遭濫用 成詐團盜用利器" [level=2] [ref=e193]
+            - generic [ref=e194]:
+              - text: 原文
+              - img [ref=e195]
+        - link [ref=e199] [cursor=pointer]:
+          - /url: https://news.tvbs.com.tw/local/3200421
+          - article [ref=e200]:
+            - generic [ref=e201]:
+              - paragraph [ref=e202]: TVBS
+              - generic [ref=e203]:
+                - img [ref=e204]
+                - text: 05/10 08:22
+            - generic [ref=e209]: 詐騙
+            - heading "報稅季詐騙來了！假冒內政部郵件「限48小時」 民眾險中招" [level=2] [ref=e210]
+            - generic [ref=e211]:
+              - text: 原文
+              - img [ref=e212]
+        - link [ref=e216] [cursor=pointer]:
+          - /url: https://www.cna.com.tw/news/asoc/202605100033.aspx
+          - article [ref=e217]:
+            - generic [ref=e218]:
+              - paragraph [ref=e219]: cna
+              - generic [ref=e220]:
+                - img [ref=e221]
+                - text: 05/10 03:13
+            - generic [ref=e226]: 詐騙
+            - heading "高雄刑大推反詐繪本 「刑事貓咪小隊」教童防詐" [level=2] [ref=e227]
+            - paragraph [ref=e228]: （中央社記者張已亷高雄10日電）高雄刑大推出反詐繪本「刑事貓咪小隊－遊戲虛寶的陷阱」，引導孩子認識常見「遊戲虛寶詐騙」手法，讓防詐觀念從小扎根，於日常生活中自然建立識詐能力。
+            - generic [ref=e229]:
+              - text: 原文
+              - img [ref=e230]
+      - button "Load more" [ref=e238]
+  - navigation "內容導覽" [ref=e239]:
+    - generic [ref=e240]:
+      - link "財經" [ref=e241] [cursor=pointer]:
+        - /url: /
+        - img [ref=e242]
+        - generic [ref=e247]: 財經
+      - link "名人動態" [ref=e248] [cursor=pointer]:
+        - /url: /celebrities
+        - img [ref=e249]
+        - generic [ref=e252]: 名人動態
+      - link "詐騙 31" [ref=e253] [cursor=pointer]:
+        - /url: /?category=society&topic=fraud
+        - img [ref=e254]
+        - generic [ref=e256]: 詐騙
+        - generic [ref=e257]: "31"
+      - link "酒駕毒駕／車禍傷亡 89" [ref=e258] [cursor=pointer]:
+        - /url: /?category=society&topic=drunk_driving_accident
+        - img [ref=e259]
+        - generic [ref=e263]: 酒駕毒駕／車禍傷亡
+        - generic [ref=e264]: "89"
+      - link "少子化 0" [ref=e265] [cursor=pointer]:
+        - /url: /?category=society&topic=low_birthrate
+        - img [ref=e266]
+        - generic [ref=e269]: 少子化
+        - generic [ref=e270]: "0"
+      - link "司法量刑不公 11" [ref=e271] [cursor=pointer]:
+        - /url: /?category=society&topic=judicial_injustice
+        - img [ref=e272]
+        - generic [ref=e276]: 司法量刑不公
+        - generic [ref=e277]: "11"
+      - link "醫護過勞／醫療崩潰 0" [ref=e278] [cursor=pointer]:
+        - /url: /?category=society&topic=healthcare_burden
+        - img [ref=e279]
+        - generic [ref=e283]: 醫護過勞／醫療崩潰
+        - generic [ref=e284]: "0"
+      - link "高房價／居住正義 0" [ref=e285] [cursor=pointer]:
+        - /url: /?category=society&topic=housing_justice
+        - img [ref=e286]
+        - generic [ref=e289]: 高房價／居住正義
+        - generic [ref=e290]: "0"
+      - link "新興毒品／校園毒品 1" [ref=e291] [cursor=pointer]:
+        - /url: /?category=society&topic=drug_abuse
+        - img [ref=e292]
+        - generic [ref=e295]: 新興毒品／校園毒品
+        - generic [ref=e296]: "1"

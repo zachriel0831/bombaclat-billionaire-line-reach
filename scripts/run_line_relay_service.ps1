@@ -46,4 +46,4 @@ if ($JavaHome -ne "" -and (Test-Path -LiteralPath $JavaHome)) {
 Set-Location $ProjectRoot
 # This script is a convenience wrapper. Direct `java -jar` or IDE application
 # startup also works because application.yml imports `.env`.
-.\mvnw.cmd spring-boot:run
+.\mvnw.cmd "-Dmaven.repo.local=D:/work_space/.m2/repository" spring-boot:run
