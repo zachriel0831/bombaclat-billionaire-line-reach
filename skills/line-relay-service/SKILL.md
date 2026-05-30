@@ -57,7 +57,7 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
   - `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, and `西卡卡股票 <代號>` reply with the latest active `t_trade_signals` row.
   - `股價分析 <代號或名稱>` (half-width or full-width space required between prefix and content) sends the entire trimmed remainder as a free-form query (e.g. `股價分析 Rocket Lab (RKLB)`) to `news-platform-api` `/api/stock-signals/generate`. The local Redis cache is bypassed for this route because the cache key normalizer would collapse "Rocket Lab (RKLB)" and "RKLB" together. The reply uses the same `STOCK_QUERY` Redis quota and renders with the stock-analysis template under `skills/line-brief-format-skill/line-stock-analysis.md`.
 - Schedule-specific rules:
-  - TW open + relevant U.S. close session open: weekdays push `pre_tw_open`; Saturdays push `us_close`.
+  - TW open + relevant U.S. close session open: weekdays push `pre_tw_open`; Saturdays push `us_close` after the Codex/data-collecting guard has had time to write the row.
   - TW closed + relevant U.S. close session open: push `us_close`.
   - TW open + relevant U.S. close session closed: push `pre_tw_open`; upstream normally has no `us_close` context for that day.
   - TW closed + relevant U.S. close session closed: push `macro_daily`.
@@ -84,4 +84,4 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
 - Webhook returns 401: check `LINE_CHANNEL_SECRET`; do not parse or reserialize the body before verifying.
 - Push returns 403: check channel access token, token reissue state, Messaging API permissions, and whether the token belongs to the same channel receiving the webhook.
 - Targets empty: check `LINE_RELAY_MYSQL_ENABLED`, DB credentials, `active`, and `test_account`.
-- Scheduled push did not run: check `LINE_SCHEDULE_ENABLED`, cron values, and `LINE_SCHEDULE_ZONE`.
+- Scheduled push did not run: check `LINE_SCHEDULE_ENABLED`, cron values, `LINE_SCHEDULE_ZONE`, and whether the delivery cron fired before the analysis guard finished writing the row.

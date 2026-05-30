@@ -65,8 +65,8 @@ line:
     # Cron expressions are evaluated in this zone, not the machine default.
     enabled: ${LINE_SCHEDULE_ENABLED:true}
     zone: ${LINE_SCHEDULE_ZONE:Asia/Taipei}
-    us-close-cron: ${LINE_SCHEDULE_US_CLOSE_CRON:0 10 5 * * SAT}
-    pre-tw-open-cron: ${LINE_SCHEDULE_PRE_TW_OPEN_CRON:0 40 7 * * *}
+    us-close-cron: ${LINE_SCHEDULE_US_CLOSE_CRON:0 30 5 * * SAT}
+    pre-tw-open-cron: ${LINE_SCHEDULE_PRE_TW_OPEN_CRON:0 50 7 * * *}
     weekly-tw-preopen-cron: ${LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON:0 10 5 * * SUN}
     disable-stale-unpushed-cron: ${LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON:0 0 0 * * *}
     tw-market-holidays: ${LINE_SCHEDULE_TW_MARKET_HOLIDAYS:}

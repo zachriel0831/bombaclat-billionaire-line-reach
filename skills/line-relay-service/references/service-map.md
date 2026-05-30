@@ -34,9 +34,10 @@ The old Python relay can run on port `18090` and expose `/callback`. This Java s
 
 ## Schedule Rules
 
-- TW open + relevant U.S. close session open: weekdays use `pre_tw_open`; Saturday `05:10 Asia/Taipei` uses `us_close`.
+- TW open + relevant U.S. close session open: weekdays use `pre_tw_open`; Saturday `05:30 Asia/Taipei` uses `us_close`.
 - TW closed + relevant U.S. close session open: `us_close`.
 - TW open + relevant U.S. close session closed: `pre_tw_open`.
 - TW closed + relevant U.S. close session closed: `macro_daily`.
 - Sunday `05:10 Asia/Taipei`: `weekly_tw_preopen` only.
 - `00:00 Asia/Taipei`: set `push_enabled = 0` for rows before today where `pushed = 0`.
+- Local Codex-guard mode: keep LINE delivery after the guard window; if the guard repairs `t_market_analyses` after the delivery cron, the poller sees `no_analysis` and will not retry automatically.

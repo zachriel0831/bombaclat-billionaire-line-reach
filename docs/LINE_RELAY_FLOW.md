@@ -99,14 +99,14 @@ Current daily limits:
 
 With `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`:
 
-- TW open + relevant U.S. close session open: `pre_tw_open` on weekdays; Saturday `05:10 Asia/Taipei` pushes `us_close`
+- TW open + relevant U.S. close session open: `pre_tw_open` on weekdays; Saturday `05:30 Asia/Taipei` pushes `us_close`
 - TW closed + relevant U.S. close session open: `us_close`
 - TW open + relevant U.S. close session closed: `pre_tw_open`
 - TW closed + relevant U.S. close session closed: `macro_daily`
 - Sunday `05:10 Asia/Taipei`: `weekly_tw_preopen`; daily market-analysis push is skipped
 - `00:00 Asia/Taipei`: disable stale rows where `analysis_date` is before today, `pushed = 0`, and `push_enabled = 1`.
 
-Override using `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, and `LINE_SCHEDULE_ZONE`.
+Override using `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, and `LINE_SCHEDULE_ZONE`. In local Codex-guard mode, schedule LINE delivery after the guard has time to create or repair the row; otherwise the poller can see `no_analysis`.
 
 ## LINE Console Setup
 
@@ -137,4 +137,4 @@ If ngrok forwards to `18090`, requests are going to the Python relay, not this J
 - Push 403 from LINE: access token is invalid, reissued, from another channel, or lacks Messaging API access.
 - Redis rate limit errors: if `LINE_PUSH_RATE_LIMIT_ENABLED=true`, confirm Redis is reachable at the configured `SPRING_DATA_REDIS_*` host/port.
 - No targets: test mode is on but no active `test_account = 1` user exists.
-- Scheduled push appears skipped: no matching `analysis_date` / `analysis_slot` row exists, or the latest row has `push_enabled = 0`.
+- Scheduled push appears skipped: no matching `analysis_date` / `analysis_slot` row exists, the latest row has `push_enabled = 0`, or the LINE cron fired before the Codex/data-collecting guard finished writing the row.
