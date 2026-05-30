@@ -127,7 +127,7 @@ Fetches the latest `t_market_analyses` row matching `(date, slot)` and logs the 
 
 When `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`, the service pushes stored market analyses on this default Asia/Taipei schedule:
 
-- TW open + relevant U.S. close session open: `pre_tw_open` on weekdays; Saturday `05:10` pushes `us_close`
+- TW open + relevant U.S. close session open: `pre_tw_open` on weekdays; Saturday `05:30` pushes `us_close`
 - TW closed + relevant U.S. close session open: `us_close`
 - TW open + relevant U.S. close session closed: `pre_tw_open`
 - TW closed + relevant U.S. close session closed: `macro_daily`
@@ -136,7 +136,7 @@ When `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`, the servi
 
 Successful scheduled/admin delivery marks the selected row as `pushed = 1` after at least one target receives it.
 
-Override with `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, or `LINE_SCHEDULE_ZONE`.
+Override with `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, or `LINE_SCHEDULE_ZONE`. Keep the LINE delivery cron after the Codex/data-collecting guard window so repaired rows exist before polling.
 
 ## Exposing the webhook
 
