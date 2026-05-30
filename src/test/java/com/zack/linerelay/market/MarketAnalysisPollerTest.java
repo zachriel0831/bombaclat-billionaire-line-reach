@@ -46,6 +46,15 @@ class MarketAnalysisPollerTest {
                 Instant.parse("2026-04-20T07:45:00Z"));
     }
 
+    private MarketAnalysis garbledAnalysis() {
+        return new MarketAnalysis(
+                77L, DATE, SLOT, "07:30",
+                "codex-guard", "v1",
+                "1) " + "?".repeat(80) + "\n" + "?".repeat(80),
+                "{\"k\":\"v\"}",
+                Instant.parse("2026-04-20T07:45:00Z"));
+    }
+
     @Test
     void pollOnceReturnsNoAnalysisWhenMissing() {
         MarketAnalysisRepository analysisRepo = mock(MarketAnalysisRepository.class);
@@ -81,6 +90,26 @@ class MarketAnalysisPollerTest {
         assertEquals("no_targets", result.skipReason());
         assertEquals(42L, result.analysisId());
         assertEquals(0, result.skippedByRateLimit());
+        verify(pushClient, never()).push(any(PushMessageType.class), anyString(), anyString());
+        verify(analysisRepo, never()).markPushed(anyLong());
+    }
+
+    @Test
+    void pollOnceSkipsGarbledSummaryWithoutResolvingTargets() {
+        MarketAnalysisRepository analysisRepo = mock(MarketAnalysisRepository.class);
+        BotTargetRepository targetRepo = mock(BotTargetRepository.class);
+        LinePushClient pushClient = mock(LinePushClient.class);
+        when(analysisRepo.findLatest(DATE, SLOT)).thenReturn(Optional.of(garbledAnalysis()));
+        when(pushClient.isPushEnabled()).thenReturn(true);
+
+        MarketAnalysisPoller poller = new MarketAnalysisPoller(analysisRepo, targetRepo, pushClient);
+        MarketAnalysisPoller.PollResult result = poller.pollOnce(DATE, SLOT);
+
+        assertFalse(result.ok());
+        assertEquals("garbled_summary", result.skipReason());
+        assertEquals(77L, result.analysisId());
+        assertTrue(result.pushEnabled());
+        verify(targetRepo, never()).listActiveTargets();
         verify(pushClient, never()).push(any(PushMessageType.class), anyString(), anyString());
         verify(analysisRepo, never()).markPushed(anyLong());
     }
@@ -267,6 +296,24 @@ class MarketAnalysisPollerTest {
         assertEquals(0, result.skippedByRateLimit());
         assertEquals(42L, result.analysisId());
         verify(pushClient).pushIgnoringToggle(eq(PushMessageType.PUBLIC_ANALYSIS), eq("U_TEST"), anyString());
+        verify(pushClient, never()).push(any(PushMessageType.class), anyString(), anyString());
+    }
+
+    @Test
+    void pushLatestToTestAccountsNowSkipsGarbledSummary() {
+        MarketAnalysisRepository analysisRepo = mock(MarketAnalysisRepository.class);
+        BotTargetRepository targetRepo = mock(BotTargetRepository.class);
+        LinePushClient pushClient = mock(LinePushClient.class);
+        when(analysisRepo.findLatestAny()).thenReturn(Optional.of(garbledAnalysis()));
+
+        MarketAnalysisPoller poller = new MarketAnalysisPoller(analysisRepo, targetRepo, pushClient);
+        MarketAnalysisPoller.PollResult result = poller.pushLatestToTestAccountsNow();
+
+        assertFalse(result.ok());
+        assertEquals("garbled_summary", result.skipReason());
+        assertEquals(77L, result.analysisId());
+        verify(targetRepo, never()).listActiveTestUserIds();
+        verify(pushClient, never()).pushIgnoringToggle(any(PushMessageType.class), anyString(), anyString());
         verify(pushClient, never()).push(any(PushMessageType.class), anyString(), anyString());
     }
 

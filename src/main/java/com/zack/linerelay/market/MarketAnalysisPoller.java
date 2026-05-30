@@ -31,6 +31,7 @@ public class MarketAnalysisPoller {
     public static final String DEFAULT_SLOT = "pre_tw_open";
     private static final int MAX_MESSAGE_LENGTH = 4500;
     private static final int SUMMARY_EXCERPT_CODE_POINTS = 100;
+    private static final String GARBLED_SUMMARY_REASON = "garbled_summary";
     private static final String READ_MORE_LABEL = "看完整分析：";
 
     private final MarketAnalysisRepository analysisRepo;
@@ -110,6 +111,14 @@ public class MarketAnalysisPoller {
         }
 
         MarketAnalysis analysis = opt.get();
+        if (isLikelyGarbledSummary(analysis.summaryText())) {
+            int summaryLen = analysis.summaryText() == null ? 0 : analysis.summaryText().length();
+            log.error("manual_market_analysis_push skipped reason={} analysis_id={} date={} slot={} summary_chars={}",
+                    GARBLED_SUMMARY_REASON, analysis.id(), analysis.analysisDate(), analysis.analysisSlot(), summaryLen);
+            return new PollResult(false, analysis.analysisDate(), analysis.analysisSlot(),
+                    0, 0, 0, true, GARBLED_SUMMARY_REASON, analysis.id());
+        }
+
         List<String> testUserIds = targetRepo.listActiveTestUserIds();
         log.info("manual_market_analysis_push fetched id={} date={} slot={} test_users={}",
                 analysis.id(), analysis.analysisDate(), analysis.analysisSlot(), testUserIds.size());
@@ -162,6 +171,14 @@ public class MarketAnalysisPoller {
         log.info("{} fetched id={} date={} slot={} model={} prompt_version={} summary_chars={} updated_at={}",
                 logPrefix, analysis.id(), analysis.analysisDate(), analysis.analysisSlot(),
                 analysis.model(), analysis.promptVersion(), summaryLen, analysis.updatedAt());
+
+        if (isLikelyGarbledSummary(analysis.summaryText())) {
+            log.error("{} skipped reason={} analysis_id={} date={} slot={} summary_chars={}",
+                    logPrefix, GARBLED_SUMMARY_REASON, analysis.id(), analysis.analysisDate(),
+                    analysis.analysisSlot(), summaryLen);
+            return new PollResult(false, analysis.analysisDate(), analysis.analysisSlot(),
+                    0, 0, 0, pushClient.isPushEnabled(), GARBLED_SUMMARY_REASON, analysis.id());
+        }
 
         List<BotTarget> targets = targetRepo.listActiveTargets();
         // Target resolution is logged before push so delivery issues can be
@@ -304,6 +321,26 @@ public class MarketAnalysisPoller {
     private String preview(String text) {
         if (text == null) return "";
         return text.length() > 120 ? text.substring(0, 120) + "..." : text;
+    }
+
+    private boolean isLikelyGarbledSummary(String summaryText) {
+        if (summaryText == null || summaryText.isBlank()) {
+            return false;
+        }
+
+        String text = summaryText.strip();
+        if (text.length() < 40) {
+            return false;
+        }
+
+        if (text.contains("????????")) {
+            return true;
+        }
+
+        long suspiciousChars = text.chars()
+                .filter(c -> c == '?' || c == '\uFFFD')
+                .count();
+        return suspiciousChars >= 20 && ((double) suspiciousChars / text.length()) >= 0.20;
     }
 
     /**

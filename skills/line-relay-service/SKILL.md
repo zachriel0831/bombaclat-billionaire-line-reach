@@ -50,6 +50,7 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
 - `LINE_PUSH_TEST_ONLY=true` sends only to active `t_bot_user_info` rows where `test_account = 1`; groups are excluded.
 - `LINE_PUSH_RATE_LIMIT_ENABLED=true` turns on Redis-backed per-target daily caps before the LINE API call is made.
 - Redis caps are keyed by `PushMessageType`: `PUBLIC_ANALYSIS` defaults to 2/day and `STOCK_QUERY` defaults to 3/day.
+- Market-analysis pushes must pass the `garbled_summary` quality gate before target resolution. Rows whose `summary_text` is mostly `?` or Unicode replacement characters are skipped and must be repaired/regenerated first.
 - Webhook commands are runtime-only and reset on restart:
   - `測試西卡卡` enables push and forces test-only mode.
   - `關閉西卡卡` disables normal pushes.
@@ -84,4 +85,5 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
 - Webhook returns 401: check `LINE_CHANNEL_SECRET`; do not parse or reserialize the body before verifying.
 - Push returns 403: check channel access token, token reissue state, Messaging API permissions, and whether the token belongs to the same channel receiving the webhook.
 - Targets empty: check `LINE_RELAY_MYSQL_ENABLED`, DB credentials, `active`, and `test_account`.
+- Push skipped with `garbled_summary`: inspect the selected `t_market_analyses.summary_text`; repair or regenerate it before pushing.
 - Scheduled push did not run: check `LINE_SCHEDULE_ENABLED`, cron values, `LINE_SCHEDULE_ZONE`, and whether the delivery cron fired before the analysis guard finished writing the row.

@@ -16,12 +16,12 @@
 4. `BotTargetRepository` upserts users/groups and later resolves active targets.
 5. `MarketAnalysisRepository` fetches market-analysis rows from `t_market_analyses`.
 6. `StockQueryService` handles stock commands by reading `TradeSignalRepository` from `t_trade_signals`.
-7. `MarketAnalysisPoller` builds text and calls `LinePushClient`.
+7. `MarketAnalysisPoller` rejects likely mojibake summaries with `garbled_summary`, then builds text and calls `LinePushClient`.
 8. `LinePushClient` enforces the optional Redis daily cap by message type, then sends to LINE `/v2/bot/message/push` or `/v2/bot/message/multicast`.
 
 ## Tables
 
-- `t_market_analyses`: source rows for pushed summaries; latest rows are selected by `updated_at DESC, id DESC`, normal push selection ignores `push_enabled = 0`, and successful scheduled/admin sends mark `pushed = 1`.
+- `t_market_analyses`: source rows for pushed summaries; latest rows are selected by `updated_at DESC, id DESC`, normal push selection ignores `push_enabled = 0`, likely mojibake `summary_text` values are skipped with `garbled_summary`, and successful scheduled/admin sends mark `pushed = 1`.
 - `t_trade_signals`: source rows for stock-query replies; only `pending_review`, `new`, and `watch` statuses are returned.
 - `t_bot_user_info`: LINE users; `active = 1` marks pushable users; `test_account = 1` marks safe test recipients.
 - `t_bot_group_info`: LINE groups/rooms; only used when test-only mode is off.
@@ -31,6 +31,8 @@
 ## Known Local Pitfall
 
 The old Python relay can run on port `18090` and expose `/callback`. This Java service runs on `8080` and exposes `/webhook`. If ngrok points to `18090` or LINE Console uses `/callback`, command messages will not hit the Java processor.
+
+When a market-analysis row reaches LINE as repeated `?`, treat it as data corruption in `t_market_analyses.summary_text` first. The relay should now skip new rows with the same signature before any target lookup or LINE API call.
 
 ## Schedule Rules
 

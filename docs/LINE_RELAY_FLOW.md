@@ -67,20 +67,22 @@ Scheduled or admin-triggered pushes use the same path:
 
 1. `MarketAnalysisScheduler` or `AdminController` calls `MarketAnalysisPoller.pollOnce`.
 2. `MarketAnalysisRepository.findLatest(date, slot)` selects the newest matching analysis where `push_enabled = 1`.
-3. `BotTargetRepository.listActiveTargets` applies current target rules.
-4. `MarketAnalysisPoller` formats the LINE text. When `LINE_PUBLIC_ANALYSIS_BASE_URL` is set, it sends a short first-paragraph excerpt plus a detail URL like `/analyses/{id}`; otherwise it falls back to `<date>` plus full summary text.
-5. `LinePushClient.push(PUBLIC_ANALYSIS, ...)` sends to each resolved target when `LINE_PUSH_ENABLED=true`.
+3. `MarketAnalysisPoller` rejects likely mojibake before target resolution. Summaries with repeated `?` blocks or high `?` / Unicode replacement-char density return `skipReason=garbled_summary` and do not call LINE.
+4. `BotTargetRepository.listActiveTargets` applies current target rules.
+5. `MarketAnalysisPoller` formats the LINE text. When `LINE_PUBLIC_ANALYSIS_BASE_URL` is set, it sends a short first-paragraph excerpt plus a detail URL like `/analyses/{id}`; otherwise it falls back to `<date>` plus full summary text.
+6. `LinePushClient.push(PUBLIC_ANALYSIS, ...)` sends to each resolved target when `LINE_PUSH_ENABLED=true`.
    - When Redis rate limiting is enabled, each LINE target ID is capped by Taipei business date and message type before the HTTP request is sent.
-6. If at least one target receives the message, `MarketAnalysisRepository.markPushed` updates that row to `pushed = 1`.
+7. If at least one target receives the message, `MarketAnalysisRepository.markPushed` updates that row to `pushed = 1`.
 
 Manual command push is different on purpose:
 
 1. `西卡卡推送` calls `MarketAnalysisPoller.pushLatestToTestAccountsNow`.
 2. The repository selects the newest row across all dates/slots.
-3. Only `t_bot_user_info.active = 1 AND test_account = 1` users are selected.
-4. `LinePushClient.pushIgnoringToggle(PUBLIC_ANALYSIS, ...)` sends even if normal push is off.
+3. The same `garbled_summary` quality gate runs before selecting test users.
+4. Only `t_bot_user_info.active = 1 AND test_account = 1` users are selected.
+5. `LinePushClient.pushIgnoringToggle(PUBLIC_ANALYSIS, ...)` sends even if normal push is off.
    - The master push toggle is bypassed here, but Redis rate limiting still applies.
-5. No pushed flag or queue state is updated.
+6. No pushed flag or queue state is updated.
 
 ## Redis Quota Keys
 
@@ -137,4 +139,5 @@ If ngrok forwards to `18090`, requests are going to the Python relay, not this J
 - Push 403 from LINE: access token is invalid, reissued, from another channel, or lacks Messaging API access.
 - Redis rate limit errors: if `LINE_PUSH_RATE_LIMIT_ENABLED=true`, confirm Redis is reachable at the configured `SPRING_DATA_REDIS_*` host/port.
 - No targets: test mode is on but no active `test_account = 1` user exists.
+- `garbled_summary`: the selected `t_market_analyses.summary_text` already contains mojibake; repair or regenerate the row before pushing.
 - Scheduled push appears skipped: no matching `analysis_date` / `analysis_slot` row exists, the latest row has `push_enabled = 0`, or the LINE cron fired before the Codex/data-collecting guard finished writing the row.
