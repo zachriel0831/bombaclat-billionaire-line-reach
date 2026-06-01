@@ -69,7 +69,7 @@ Scheduled or admin-triggered pushes use the same path:
 2. `MarketAnalysisRepository.findLatest(date, slot)` selects the newest matching analysis where `push_enabled = 1`.
 3. `MarketAnalysisPoller` rejects likely mojibake before target resolution. Summaries with repeated `?` blocks or high `?` / Unicode replacement-char density return `skipReason=garbled_summary` and do not call LINE.
 4. `BotTargetRepository.listActiveTargets` applies current target rules.
-5. `MarketAnalysisPoller` formats the LINE text. When `LINE_PUBLIC_ANALYSIS_BASE_URL` is set, it sends a short first-paragraph excerpt plus a detail URL like `/analyses/{id}`; otherwise it falls back to `<date>` plus full summary text.
+5. `MarketAnalysisPoller` formats the LINE text. When `LINE_PUBLIC_ANALYSIS_BASE_URL` is set, it sends a short excerpt plus a detail URL like `/analyses/{id}`; daily reports that start with a standalone `今日一句話` heading combine that heading with the following sentence before trimming. Otherwise it falls back to `<date>` plus full summary text.
 6. `LinePushClient.push(PUBLIC_ANALYSIS, ...)` sends to each resolved target when `LINE_PUSH_ENABLED=true`.
    - When Redis rate limiting is enabled, each LINE target ID is capped by Taipei business date and message type before the HTTP request is sent.
 7. If at least one target receives the message, `MarketAnalysisRepository.markPushed` updates that row to `pushed = 1`.

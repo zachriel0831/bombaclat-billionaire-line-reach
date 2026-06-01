@@ -32,6 +32,7 @@ public class MarketAnalysisPoller {
     private static final int MAX_MESSAGE_LENGTH = 4500;
     private static final int SUMMARY_EXCERPT_CODE_POINTS = 100;
     private static final String GARBLED_SUMMARY_REASON = "garbled_summary";
+    private static final String TODAY_ONE_SENTENCE_LABEL = "今日一句話";
     private static final String READ_MORE_LABEL = "看完整分析：";
 
     private final MarketAnalysisRepository analysisRepo;
@@ -270,6 +271,11 @@ public class MarketAnalysisPoller {
         }
 
         String[] paragraphs = body.replace("\r\n", "\n").replace('\r', '\n').split("\\n\\s*\\n");
+        String oneSentenceExcerpt = buildTodayOneSentenceExcerpt(paragraphs);
+        if (!oneSentenceExcerpt.isBlank()) {
+            return excerptWithMoreMarker(oneSentenceExcerpt, SUMMARY_EXCERPT_CODE_POINTS);
+        }
+
         String fallback = "";
         for (String paragraph : paragraphs) {
             String normalized = paragraph.replaceAll("\\s+", " ").strip();
@@ -284,6 +290,46 @@ public class MarketAnalysisPoller {
             }
         }
         return excerptWithMoreMarker(fallback, SUMMARY_EXCERPT_CODE_POINTS);
+    }
+
+    private String buildTodayOneSentenceExcerpt(String[] paragraphs) {
+        for (int i = 0; i < paragraphs.length; i++) {
+            String normalized = paragraphs[i].replaceAll("\\s+", " ").strip();
+            if (normalized.isBlank()) {
+                continue;
+            }
+
+            if (normalized.equals(TODAY_ONE_SENTENCE_LABEL)) {
+                String next = nextNonHeadingParagraph(paragraphs, i + 1);
+                return next.isBlank() ? normalized : TODAY_ONE_SENTENCE_LABEL + " " + next;
+            }
+
+            if (normalized.startsWith(TODAY_ONE_SENTENCE_LABEL + " ")) {
+                return normalized;
+            }
+        }
+        return "";
+    }
+
+    private String nextNonHeadingParagraph(String[] paragraphs, int startIndex) {
+        for (int i = startIndex; i < paragraphs.length; i++) {
+            String normalized = paragraphs[i].replaceAll("\\s+", " ").strip();
+            if (normalized.isBlank() || isDailySectionHeading(normalized)) {
+                continue;
+            }
+            return normalized;
+        }
+        return "";
+    }
+
+    private boolean isDailySectionHeading(String text) {
+        return text.equals(TODAY_ONE_SENTENCE_LABEL)
+                || text.equals("三個檢查點")
+                || text.equals("總經與流動性")
+                || text.equals("景氣循環")
+                || text.equals("國際新聞傳導")
+                || text.equals("產業板塊解析")
+                || text.equals("風險與資料缺口");
     }
 
     private String excerptWithMoreMarker(String text, int limit) {

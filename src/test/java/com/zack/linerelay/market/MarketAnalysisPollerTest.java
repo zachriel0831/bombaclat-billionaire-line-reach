@@ -219,6 +219,35 @@ class MarketAnalysisPollerTest {
     }
 
     @Test
+    void pollOnceUsesTodayOneSentenceBodyWhenHeadingIsSeparateParagraph() {
+        MarketAnalysisRepository analysisRepo = mock(MarketAnalysisRepository.class);
+        BotTargetRepository targetRepo = mock(BotTargetRepository.class);
+        LinePushClient pushClient = mock(LinePushClient.class);
+        String oneSentence = "市場現在在交易的是「信用面穩與TSM ADR走強對上SOX回檔與美股廣度收斂」的拉鋸，台股盤前偏中性、權值撐指，最大不確定在於半導體鏈能否抵抗美股隔夜的beta壓力。";
+        MarketAnalysis analysis = new MarketAnalysis(
+                94L, "2026-06-01", SLOT, "07:30",
+                "codex-guard", "v1",
+                "今日一句話\n\n" + oneSentence + "\n\n三個檢查點\n\n- 第一點\n- 第二點\n- 第三點",
+                "{\"k\":\"v\"}",
+                Instant.parse("2026-06-01T07:45:00Z"));
+        when(analysisRepo.findLatest("2026-06-01", SLOT)).thenReturn(Optional.of(analysis));
+        when(targetRepo.listActiveTargets()).thenReturn(List.of(BotTarget.user("U1")));
+        when(pushClient.isPushEnabled()).thenReturn(true);
+        when(pushClient.push(eq(PushMessageType.PUBLIC_ANALYSIS), eq("U1"), anyString()))
+                .thenReturn(LinePushClient.PushAttempt.sent());
+
+        MarketAnalysisPoller poller = new MarketAnalysisPoller(
+                analysisRepo, targetRepo, pushClient, "https://example.test/analyses");
+        poller.pollOnce("2026-06-01", SLOT);
+
+        ArgumentCaptor<String> message = ArgumentCaptor.forClass(String.class);
+        verify(pushClient).push(eq(PushMessageType.PUBLIC_ANALYSIS), eq("U1"), message.capture());
+        assertTrue(message.getValue().contains("今日一句話 市場現在在交易的是"));
+        assertFalse(message.getValue().contains("\n今日一句話...\n\n"));
+        assertTrue(message.getValue().contains("https://example.test/analyses/94"));
+    }
+
+    @Test
     void pollOnceCountsPartialFailures() {
         MarketAnalysisRepository analysisRepo = mock(MarketAnalysisRepository.class);
         BotTargetRepository targetRepo = mock(BotTargetRepository.class);
