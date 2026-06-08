@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class RedisPushRateLimiterTest {
 
     private PushRateLimitProperties props() {
-        return new PushRateLimitProperties(true, 2, 2, 3, "Asia/Taipei", "line:test:push:rate-limit");
+        return new PushRateLimitProperties(true, 2, 2, 3, 3, "Asia/Taipei", "line:test:push:rate-limit");
     }
 
     private Clock fixedClock() {
@@ -79,6 +79,23 @@ class RedisPushRateLimiterTest {
         assertTrue(lease.allowed());
         assertEquals(PushMessageType.STOCK_QUERY, lease.type());
         assertEquals(3L, lease.usedCount());
+        assertEquals(3, lease.dailyLimit());
+    }
+
+    @Test
+    void acquireAllowsMacroCalendarWithSeparateLimitAndKey() {
+        StringRedisTemplate redis = mock(StringRedisTemplate.class);
+        @SuppressWarnings("unchecked")
+        ValueOperations<String, String> ops = mock(ValueOperations.class);
+        when(redis.opsForValue()).thenReturn(ops);
+        when(ops.increment("line:test:push:rate-limit:2026-04-27:MACRO_CALENDAR:U1")).thenReturn(1L);
+
+        RedisPushRateLimiter limiter = new RedisPushRateLimiter(redis, props(), fixedClock());
+        PushRateLimiter.Lease lease = limiter.acquire(PushMessageType.MACRO_CALENDAR, "U1");
+
+        assertTrue(lease.allowed());
+        assertEquals(PushMessageType.MACRO_CALENDAR, lease.type());
+        assertEquals("line:test:push:rate-limit:2026-04-27:MACRO_CALENDAR:U1", lease.redisKey());
         assertEquals(3, lease.dailyLimit());
     }
 

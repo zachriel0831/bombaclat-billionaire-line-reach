@@ -96,6 +96,7 @@ Current daily limits:
 
 - `PUBLIC_ANALYSIS`: `2`
 - `STOCK_QUERY`: `3`
+- `MACRO_CALENDAR`: `3`
 
 ## Default Schedules
 
@@ -106,9 +107,10 @@ With `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`:
 - TW open + relevant U.S. close session closed: `pre_tw_open`
 - TW closed + relevant U.S. close session closed: `macro_daily`
 - Sunday `05:10 Asia/Taipei`: `weekly_tw_preopen`; daily market-analysis push is skipped
+- Daily `08:00 Asia/Taipei`: send one aggregated U.S. macro release-calendar reminder for rows in `t_macro_release_calendar` whose `reminder_date_taipei` is today
 - `00:00 Asia/Taipei`: disable stale rows where `analysis_date` is before today, `pushed = 0`, and `push_enabled = 1`.
 
-Override using `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, and `LINE_SCHEDULE_ZONE`. In local Codex-guard mode, schedule LINE delivery after the guard has time to create or repair the row; otherwise the poller can see `no_analysis`.
+Override using `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_MACRO_CALENDAR_REMINDER_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, and `LINE_SCHEDULE_ZONE`. In local Codex-guard mode, schedule LINE delivery after the guard has time to create or repair the row; otherwise the poller can see `no_analysis`.
 
 ## LINE Console Setup
 

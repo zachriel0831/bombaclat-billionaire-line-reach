@@ -36,7 +36,7 @@ public record LineProperties(
             push = new Push(false, true);
         }
         if (mysql == null) {
-            mysql = new Mysql(false, null, null, null, null);
+            mysql = new Mysql(false, null, null, null, null, null);
         }
     }
 
@@ -77,8 +77,13 @@ public record LineProperties(
             String analysisTable,
             String groupTable,
             String userTable,
-            String tradeSignalTable
+            String tradeSignalTable,
+            String macroCalendarTable
     ) {
+        public Mysql(boolean enabled, String analysisTable, String groupTable, String userTable, String tradeSignalTable) {
+            this(enabled, analysisTable, groupTable, userTable, tradeSignalTable, null);
+        }
+
         /**
          * Keeps all repository SQL simple by normalizing blank table-name
          * configuration before beans are constructed.
@@ -95,6 +100,9 @@ public record LineProperties(
             }
             if (tradeSignalTable == null || tradeSignalTable.isBlank()) {
                 tradeSignalTable = "t_trade_signals";
+            }
+            if (macroCalendarTable == null || macroCalendarTable.isBlank()) {
+                macroCalendarTable = "t_macro_release_calendar";
             }
         }
     }

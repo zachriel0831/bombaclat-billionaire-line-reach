@@ -1,6 +1,35 @@
 # line-relay-service
 
-Spring Boot 3 / Java 21 service that owns LINE webhook intake and outbound push for the news-collector stack. Phase 1 scope: webhook signature verification, event logging, and a `LinePushClient` for outbound messages. Database integration, dispatcher, and queue come in Phase 2–3.
+Spring Boot 3 / Java 21 service that owns LINE webhook intake, LINE target state, and outbound LINE delivery for the financial news platform. It is the user-facing notification edge of the stack: upstream collectors and analysis jobs write data, `news-platform-api` exposes read/model endpoints, and this service turns selected rows or user commands into LINE messages.
+
+## Platform Role
+
+- Receives LINE webhook events at `POST /webhook`, verifies signatures, and records active user/group targets when MySQL is enabled.
+- Pushes scheduled and manual market-analysis messages from `t_market_analyses`.
+- Handles stock-query commands by calling `news-platform-api` for fresh stock-signal generation, with Redis cache and quota guards.
+- Enforces delivery toggles, test-only routing, Redis rate limits, and market-calendar scheduling.
+- Does not collect news, generate scheduled analyses, serve the public website, monitor market ticks, or place broker orders.
+
+## Documentation Map
+
+| Need | Start here |
+|---|---|
+| Service flow, startup, webhook, scheduling, troubleshooting | [docs/LINE_RELAY_FLOW.md](docs/LINE_RELAY_FLOW.md) |
+| Compact service map for entry points, tables, schedule rules | [skills/line-relay-service/references/service-map.md](skills/line-relay-service/references/service-map.md) |
+| Agent/coding workflow for this repo | [skills/line-relay-service/SKILL.md](skills/line-relay-service/SKILL.md) |
+| Codex/Claude operating rules | [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md) |
+| Session handoff context shared with other platform services | [docs/SESSION_HANDOFF_2026-05-04.md](docs/SESSION_HANDOFF_2026-05-04.md) |
+| Environment template | [.env.example](.env.example) |
+
+## Related Services
+
+| Service | Relationship |
+|---|---|
+| `data-collecting` | Produces relay events, market analyses, weekly summaries, and trade-signal rows. |
+| `news-platform-api` | Serves the API used by LINE stock-query commands and the public frontend. |
+| `news-display-frontend` | Public web UI linked from LINE analysis pushes. |
+| `stock-monitor-service` | Produces quote snapshots, candles, watchlist trigger events, and live market context. |
+| `order-dispatcher-service` | Future brokerage-order leg; LINE delivery stays here. |
 
 ## Requirements
 
@@ -10,6 +39,8 @@ Spring Boot 3 / Java 21 service that owns LINE webhook intake and outbound push 
 ## Maintainer Docs
 
 - [LINE relay flow](docs/LINE_RELAY_FLOW.md) — startup, webhook, push, scheduling, and troubleshooting flow.
+- [Service map](skills/line-relay-service/references/service-map.md) — entry points, data flow, tables, and schedule rules.
+- [Agent rules](AGENTS.md) — Codex-primary workflow and Claude secondary handoff.
 - [Repo skill](skills/line-relay-service/SKILL.md) — compact Codex/agent operating guide for this service.
 
 ## Configuration
@@ -31,6 +62,7 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_PUSH_RATE_LIMIT_ENABLED` | no | Enables Redis-backed per-target daily caps. |
 | `LINE_PUSH_PUBLIC_ANALYSIS_DAILY_MAX_PER_TARGET` | no | Daily cap for public analysis pushes. Default `2`. |
 | `LINE_PUSH_STOCK_QUERY_DAILY_MAX_PER_TARGET` | no | Daily cap for stock-query replies. Default `3`. |
+| `LINE_PUSH_MACRO_CALENDAR_DAILY_MAX_PER_TARGET` | no | Daily cap for macro-calendar reminder pushes. Default `3`. |
 | `LINE_PUSH_RATE_LIMIT_ZONE` | no | Business-date timezone for Redis counters. Default `Asia/Taipei`. |
 | `LINE_PUSH_RATE_LIMIT_KEY_PREFIX` | no | Redis key prefix. Default `line:push:rate-limit`. |
 | `LINE_STOCK_SIGNAL_CACHE_ENABLED` | no | Enables Redis cache for successful stock-query replies. Default `true`. |
@@ -44,6 +76,7 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_RELAY_MYSQL_GROUP_TABLE` | no | Defaults to `t_bot_group_info` |
 | `LINE_RELAY_MYSQL_USER_TABLE` | no | Defaults to `t_bot_user_info` |
 | `LINE_RELAY_MYSQL_TRADE_SIGNAL_TABLE` | no | Defaults to `t_trade_signals`; retained for repository/admin/debug code. LINE stock-query replies call `news-platform-api` instead of reading this table directly. |
+| `LINE_RELAY_MYSQL_MACRO_CALENDAR_TABLE` | no | Defaults to `t_macro_release_calendar`; read for official U.S. macro release reminders prepared by `data-collecting`. |
 | `LINE_SCHEDULE_TW_MARKET_HOLIDAYS` | no | Comma-separated `YYYY-MM-DD` TW market holidays used by the public-analysis routing matrix. |
 | `LINE_SCHEDULE_US_MARKET_HOLIDAYS` | no | Comma-separated `YYYY-MM-DD` U.S. market holidays. The checked U.S. date is Taiwan local date minus one day. |
 
@@ -70,6 +103,23 @@ $env:LINE_CHANNEL_SECRET="..."
 $env:LINE_CHANNEL_ACCESS_TOKEN="..."
 ./mvnw.cmd spring-boot:run
 ```
+
+Fast local webhook stack on this workstation:
+
+```powershell
+.\scripts\start_line_relay_webhook_stack.ps1 -UpdateLineWebhook
+```
+
+This starts or verifies Redis on `6379`, line-relay on `8080`, and ngrok as
+`https://7823-220-141-219-53.ngrok-free.app -> http://localhost:8080`. It also
+updates LINE's webhook endpoint and runs LINE's webhook test when
+`-UpdateLineWebhook` is provided. If you run it from an agent/sandbox that kills
+child processes when the command ends, add `-UseTaskScheduler` so Redis,
+line-relay, and ngrok stay detached.
+
+The script uses the packaged jar for fast startup when
+`target/line-relay-service-0.1.0-SNAPSHOT.jar` is current; after source changes,
+it falls back to `spring-boot:run` until the jar is rebuilt.
 
 Local smoke run without real LINE credentials:
 
@@ -132,11 +182,12 @@ When `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`, the servi
 - TW open + relevant U.S. close session closed: `pre_tw_open`
 - TW closed + relevant U.S. close session closed: `macro_daily`
 - Sunday `05:10`: `weekly_tw_preopen`; no daily market-analysis push
+- Daily `08:00`: one U.S. macro release-calendar reminder when tomorrow Taiwan time has CPI, PPI, Employment Situation/nonfarm payrolls, or retail sales rows in `t_macro_release_calendar`
 - `00:00` daily: disables stale rows where `analysis_date` is before today, `pushed = 0`, and `push_enabled = 1`.
 
 Successful scheduled/admin delivery marks the selected row as `pushed = 1` after at least one target receives it.
 
-Override with `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, or `LINE_SCHEDULE_ZONE`. Keep the LINE delivery cron after the Codex/data-collecting guard window so repaired rows exist before polling.
+Override with `LINE_SCHEDULE_US_CLOSE_CRON`, `LINE_SCHEDULE_PRE_TW_OPEN_CRON`, `LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON`, `LINE_SCHEDULE_MACRO_CALENDAR_REMINDER_CRON`, `LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON`, `LINE_SCHEDULE_TW_MARKET_HOLIDAYS`, `LINE_SCHEDULE_US_MARKET_HOLIDAYS`, or `LINE_SCHEDULE_ZONE`. Keep the LINE delivery cron after the Codex/data-collecting guard window so repaired rows exist before polling.
 
 ## Exposing the webhook
 
@@ -146,6 +197,25 @@ LINE requires HTTPS. For local development, expose the port via ngrok or cloudfl
 ngrok http 8080
 # Webhook URL: https://<random>.ngrok-free.app/webhook
 ```
+
+For this repo's current LINE channel, use the fixed ngrok URL below and keep it
+pointed at the Java service port:
+
+```powershell
+ngrok http 8080 --url https://7823-220-141-219-53.ngrok-free.app
+# LINE Webhook URL: https://7823-220-141-219-53.ngrok-free.app/webhook
+```
+
+If LINE Verify returns `404 Not Found`, first check the local ngrok inspector:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:4040/api/tunnels
+```
+
+The tunnel should show `public_url` as
+`https://7823-220-141-219-53.ngrok-free.app` and `config.addr` as
+`http://localhost:8080`. A tunnel pointed at `localhost:3000` is the frontend
+dev server and will not serve `/webhook`.
 
 ## Programmatic push
 

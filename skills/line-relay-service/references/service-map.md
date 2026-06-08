@@ -15,18 +15,21 @@
 3. `WebhookEventProcessor` extracts user/group state and runtime commands.
 4. `BotTargetRepository` upserts users/groups and later resolves active targets.
 5. `MarketAnalysisRepository` fetches market-analysis rows from `t_market_analyses`.
-6. `StockQueryService` handles stock commands by reading `TradeSignalRepository` from `t_trade_signals`.
-7. `MarketAnalysisPoller` rejects likely mojibake summaries with `garbled_summary`, then builds text and calls `LinePushClient`.
-8. `LinePushClient` enforces the optional Redis daily cap by message type, then sends to LINE `/v2/bot/message/push` or `/v2/bot/message/multicast`.
+6. `MacroReleaseCalendarRepository` reads official release reminders from `t_macro_release_calendar`.
+7. `StockQueryService` handles stock commands by reading `TradeSignalRepository` from `t_trade_signals`.
+8. `MarketAnalysisPoller` rejects likely mojibake summaries with `garbled_summary`, then builds text and calls `LinePushClient`.
+9. `MacroCalendarReminderService` sends one aggregated reminder for tomorrow's U.S. macro releases.
+10. `LinePushClient` enforces the optional Redis daily cap by message type, then sends to LINE `/v2/bot/message/push` or `/v2/bot/message/multicast`.
 
 ## Tables
 
 - `t_market_analyses`: source rows for pushed summaries; latest rows are selected by `updated_at DESC, id DESC`, normal push selection ignores `push_enabled = 0`, likely mojibake `summary_text` values are skipped with `garbled_summary`, and successful scheduled/admin sends mark `pushed = 1`.
 - `t_trade_signals`: source rows for stock-query replies; only `pending_review`, `new`, and `watch` statuses are returned.
+- `t_macro_release_calendar`: official U.S. macro release calendar rows prepared by `data-collecting`; Java reads `reminder_date_taipei = today AND reminder_pushed = 0` and marks sent rows after at least one target receives the reminder.
 - `t_bot_user_info`: LINE users; `active = 1` marks pushable users; `test_account = 1` marks safe test recipients.
 - `t_bot_group_info`: LINE groups/rooms; only used when test-only mode is off.
 - Redis keys: `line:push:rate-limit:<YYYY-MM-DD>:<PushMessageType>:<targetId>` by default when global push caps are enabled.
-- Redis daily caps: `PUBLIC_ANALYSIS = 2`, `STOCK_QUERY = 3`.
+- Redis daily caps: `PUBLIC_ANALYSIS = 2`, `STOCK_QUERY = 3`, `MACRO_CALENDAR = 3`.
 
 ## Known Local Pitfall
 
@@ -41,5 +44,6 @@ When a market-analysis row reaches LINE as repeated `?`, treat it as data corrup
 - TW open + relevant U.S. close session closed: `pre_tw_open`.
 - TW closed + relevant U.S. close session closed: `macro_daily`.
 - Sunday `05:10 Asia/Taipei`: `weekly_tw_preopen` only.
+- Daily `08:00 Asia/Taipei`: macro calendar reminder for tomorrow Taiwan-time CPI/PPI/nonfarm payrolls/retail sales releases.
 - `00:00 Asia/Taipei`: set `push_enabled = 0` for rows before today where `pushed = 0`.
 - Local Codex-guard mode: keep LINE delivery after the guard window; if the guard repairs `t_market_analyses` after the delivery cron, the poller sees `no_analysis` and will not retry automatically.

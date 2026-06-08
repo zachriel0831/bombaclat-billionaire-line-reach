@@ -67,3 +67,28 @@ CREATE TABLE IF NOT EXISTS t_trade_signals (
   CONSTRAINT uq_trade_signal_key UNIQUE (signal_key),
   CONSTRAINT uq_trade_signal_idempotency UNIQUE (idempotency_key)
 );
+
+CREATE TABLE IF NOT EXISTS t_macro_release_calendar (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  event_key CHAR(40) NOT NULL,
+  source_id VARCHAR(64) NOT NULL,
+  source_name VARCHAR(128) NOT NULL,
+  indicator_code VARCHAR(64) NOT NULL,
+  indicator_name VARCHAR(128) NOT NULL,
+  period_label VARCHAR(64) NOT NULL,
+  release_title CLOB NOT NULL,
+  release_at_utc TIMESTAMP NOT NULL,
+  release_at_taipei TIMESTAMP NOT NULL,
+  release_timezone VARCHAR(64) DEFAULT 'America/New_York',
+  importance TINYINT DEFAULT 3,
+  reminder_date_taipei DATE NOT NULL,
+  reminder_pushed TINYINT DEFAULT 0,
+  reminder_pushed_at TIMESTAMP,
+  reminder_push_status VARCHAR(32),
+  reminder_push_error CLOB,
+  source_url CLOB NOT NULL,
+  raw_json CLOB,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT uq_macro_release_event_key UNIQUE (event_key)
+);

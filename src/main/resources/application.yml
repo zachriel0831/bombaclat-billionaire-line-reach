@@ -48,6 +48,7 @@ line:
       enabled: ${LINE_PUSH_RATE_LIMIT_ENABLED:false}
       public-analysis-daily-max-per-target: ${LINE_PUSH_PUBLIC_ANALYSIS_DAILY_MAX_PER_TARGET:2}
       stock-query-daily-max-per-target: ${LINE_PUSH_STOCK_QUERY_DAILY_MAX_PER_TARGET:3}
+      macro-calendar-daily-max-per-target: ${LINE_PUSH_MACRO_CALENDAR_DAILY_MAX_PER_TARGET:3}
       zone: ${LINE_PUSH_RATE_LIMIT_ZONE:${LINE_SCHEDULE_ZONE:Asia/Taipei}}
       key-prefix: ${LINE_PUSH_RATE_LIMIT_KEY_PREFIX:line:push:rate-limit}
   stock-signal-cache:
@@ -61,6 +62,7 @@ line:
     group-table: ${LINE_RELAY_MYSQL_GROUP_TABLE:t_bot_group_info}
     user-table: ${LINE_RELAY_MYSQL_USER_TABLE:t_bot_user_info}
     trade-signal-table: ${LINE_RELAY_MYSQL_TRADE_SIGNAL_TABLE:t_trade_signals}
+    macro-calendar-table: ${LINE_RELAY_MYSQL_MACRO_CALENDAR_TABLE:t_macro_release_calendar}
   schedule:
     # Cron expressions are evaluated in this zone, not the machine default.
     enabled: ${LINE_SCHEDULE_ENABLED:true}
@@ -68,6 +70,7 @@ line:
     us-close-cron: ${LINE_SCHEDULE_US_CLOSE_CRON:0 30 5 * * SAT}
     pre-tw-open-cron: ${LINE_SCHEDULE_PRE_TW_OPEN_CRON:0 50 7 * * *}
     weekly-tw-preopen-cron: ${LINE_SCHEDULE_WEEKLY_TW_PREOPEN_CRON:0 10 5 * * SUN}
+    macro-calendar-reminder-cron: ${LINE_SCHEDULE_MACRO_CALENDAR_REMINDER_CRON:0 0 8 * * *}
     disable-stale-unpushed-cron: ${LINE_SCHEDULE_DISABLE_STALE_UNPUSHED_CRON:0 0 0 * * *}
     tw-market-holidays: ${LINE_SCHEDULE_TW_MARKET_HOLIDAYS:}
     us-market-holidays: ${LINE_SCHEDULE_US_MARKET_HOLIDAYS:}
