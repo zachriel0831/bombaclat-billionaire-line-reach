@@ -95,9 +95,38 @@ public class MacroCalendarReminderService {
                 .map(item -> item.releaseAtTaipei().toLocalDate())
                 .findFirst()
                 .orElse(reminderDateTaipei.plusDays(1));
+        List<MacroRelease> macroReleases = releases.stream()
+                .filter(item -> !item.earningsRelease())
+                .toList();
+        List<MacroRelease> earningsReleases = releases.stream()
+                .filter(MacroRelease::earningsRelease)
+                .toList();
         StringBuilder sb = new StringBuilder();
-        sb.append("明天有美國重要經濟數據公布\n");
-        sb.append("發布日：").append(releaseDate).append("（台灣時間）\n\n");
+        if (!macroReleases.isEmpty() && !earningsReleases.isEmpty()) {
+            sb.append("明天有重要市場行事曆\n");
+            sb.append("發布日：以各項目台灣時間為準\n\n");
+        } else if (!earningsReleases.isEmpty()) {
+            sb.append("明天有權值股財報公布\n");
+            sb.append("發布日：").append(releaseDate).append("（台灣時間）\n\n");
+        } else {
+            sb.append("明天有美國重要經濟數據公布\n");
+            sb.append("發布日：").append(releaseDate).append("（台灣時間）\n\n");
+        }
+        appendSection(sb, "美國經濟數據", macroReleases);
+        appendSection(sb, "權值股財報", earningsReleases);
+        sb.append("\n資料來源：");
+        sb.append(releases.stream().map(MacroRelease::sourceName).distinct().reduce((a, b) -> a + " / " + b).orElse("Official calendar"));
+        return sb.toString().strip();
+    }
+
+    private void appendSection(StringBuilder sb, String title, List<MacroRelease> releases) {
+        if (releases.isEmpty()) {
+            return;
+        }
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+            sb.append("\n");
+        }
+        sb.append(title).append("\n");
         for (int i = 0; i < releases.size(); i++) {
             MacroRelease release = releases.get(i);
             sb.append(i + 1).append(". ");
@@ -109,14 +138,19 @@ public class MacroCalendarReminderService {
                 sb.append("（").append(release.periodLabel()).append("）");
             }
             sb.append("\n");
-            sb.append(noteFor(release.indicatorCode())).append("\n");
+            sb.append(noteFor(release)).append("\n");
             if (i < releases.size() - 1) {
                 sb.append("\n");
             }
         }
-        sb.append("\n資料來源：");
-        sb.append(releases.stream().map(MacroRelease::sourceName).distinct().reduce((a, b) -> a + " / " + b).orElse("Official calendar"));
-        return sb.toString().strip();
+        sb.append("\n");
+    }
+
+    private String noteFor(MacroRelease release) {
+        if (release.earningsRelease()) {
+            return "觀察：財報與展望是否牽動美股科技權值、AI 供應鏈與台股相關族群。";
+        }
+        return noteFor(release.indicatorCode());
     }
 
     private String noteFor(String indicatorCode) {

@@ -16,4 +16,7 @@ public record MacroRelease(
         String sourceUrl,
         int importance
 ) {
+    public boolean earningsRelease() {
+        return indicatorCode != null && indicatorCode.startsWith("earnings_");
+    }
 }

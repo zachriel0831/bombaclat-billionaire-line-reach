@@ -76,7 +76,7 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_RELAY_MYSQL_GROUP_TABLE` | no | Defaults to `t_bot_group_info` |
 | `LINE_RELAY_MYSQL_USER_TABLE` | no | Defaults to `t_bot_user_info` |
 | `LINE_RELAY_MYSQL_TRADE_SIGNAL_TABLE` | no | Defaults to `t_trade_signals`; retained for repository/admin/debug code. LINE stock-query replies call `news-platform-api` instead of reading this table directly. |
-| `LINE_RELAY_MYSQL_MACRO_CALENDAR_TABLE` | no | Defaults to `t_macro_release_calendar`; read for official U.S. macro release reminders prepared by `data-collecting`. |
+| `LINE_RELAY_MYSQL_MACRO_CALENDAR_TABLE` | no | Defaults to `t_macro_release_calendar`; read for market release-calendar reminders prepared by `data-collecting`, including U.S. macro rows and `earnings_<symbol>` heavyweight earnings rows. |
 | `LINE_SCHEDULE_TW_MARKET_HOLIDAYS` | no | Comma-separated `YYYY-MM-DD` TW market holidays used by the public-analysis routing matrix. |
 | `LINE_SCHEDULE_US_MARKET_HOLIDAYS` | no | Comma-separated `YYYY-MM-DD` U.S. market holidays. The checked U.S. date is Taiwan local date minus one day. |
 
@@ -182,7 +182,7 @@ When `LINE_RELAY_MYSQL_ENABLED=true` and `LINE_SCHEDULE_ENABLED=true`, the servi
 - TW open + relevant U.S. close session closed: `pre_tw_open`
 - TW closed + relevant U.S. close session closed: `macro_daily`
 - Sunday `05:10`: `weekly_tw_preopen`; no daily market-analysis push
-- Daily `08:00`: one U.S. macro release-calendar reminder when tomorrow Taiwan time has CPI, PPI, Employment Situation/nonfarm payrolls, or retail sales rows in `t_macro_release_calendar`
+- Daily `08:00`: one market release-calendar reminder when tomorrow Taiwan time has CPI/PPI/jobs/retail-sales rows or `earnings_<symbol>` heavyweight earnings rows in `t_macro_release_calendar`
 - `00:00` daily: disables stale rows where `analysis_date` is before today, `pushed = 0`, and `push_enabled = 1`.
 
 Successful scheduled/admin delivery marks the selected row as `pushed = 1` after at least one target receives it.

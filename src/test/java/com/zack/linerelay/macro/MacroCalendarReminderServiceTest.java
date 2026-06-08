@@ -92,6 +92,24 @@ class MacroCalendarReminderServiceTest {
         assertTrue(message.contains("消費韌性強"));
     }
 
+    @Test
+    void buildMessageGroupsMacroAndEarningsRows() {
+        MacroCalendarReminderService service =
+                new MacroCalendarReminderService(mock(MacroReleaseCalendarRepository.class),
+                        mock(BotTargetRepository.class), mock(LinePushClient.class));
+        String message = service.buildMessage(REMINDER_DATE, List.of(
+                release(1L, "us_cpi", "U.S. CPI", "May 2026",
+                        LocalDateTime.parse("2026-06-10T20:30")),
+                release(2L, "earnings_nvda", "NVDA NVIDIA Earnings (盤後)", "Apr/2026",
+                        LocalDateTime.parse("2026-06-11T04:05"))));
+
+        assertTrue(message.contains("明天有重要市場行事曆"));
+        assertTrue(message.contains("美國經濟數據"));
+        assertTrue(message.contains("權值股財報"));
+        assertTrue(message.contains("06/11 04:05 NVDA NVIDIA Earnings"));
+        assertTrue(message.contains("AI 供應鏈"));
+    }
+
     private MacroRelease release(
             long id,
             String indicatorCode,
