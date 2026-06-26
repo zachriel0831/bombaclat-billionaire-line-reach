@@ -117,6 +117,16 @@ updates LINE's webhook endpoint and runs LINE's webhook test when
 child processes when the command ends, add `-UseTaskScheduler` so Redis,
 line-relay, and ngrok stay detached.
 
+For a local restart without touching ngrok or Redis, use:
+
+```powershell
+.\scripts\start_line_relay_webhook_stack.ps1 -ForceRestart -NoNgrok -NoRedis
+```
+
+`-ForceRestart` now fails fast when the existing port owner cannot be stopped,
+and waits for the port to be released before checking health. In a normal local
+PowerShell session, `-UseTaskScheduler` is not required.
+
 The script uses the packaged jar for fast startup when
 `target/line-relay-service-0.1.0-SNAPSHOT.jar` is current; after source changes,
 it falls back to `spring-boot:run` until the jar is rebuilt.
