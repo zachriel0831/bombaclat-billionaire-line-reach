@@ -27,9 +27,12 @@ public class RestClientConfig {
     @Bean
     @Qualifier("platformRestClient")
     public RestClient platformRestClient(LineProperties props) {
-        return RestClient.builder()
+        RestClient.Builder builder = RestClient.builder()
                 .baseUrl(props.platform().baseUrl())
-                .defaultHeader("Content-Type", "application/json")
-                .build();
+                .defaultHeader("Content-Type", "application/json");
+        if (!props.platform().writeApiKey().isBlank()) {
+            builder.defaultHeader(props.platform().writeApiKeyHeader(), props.platform().writeApiKey());
+        }
+        return builder.build();
     }
 }

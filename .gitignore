@@ -23,6 +23,7 @@ application-local.properties
 # Logs
 *.log
 logs/
+runtime/
 
 # Test reports
 **/surefire-reports/

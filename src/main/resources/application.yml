@@ -35,6 +35,14 @@ line:
     enabled: ${LINE_PLATFORM_ENABLED:true}
     base-url: ${LINE_PLATFORM_BASE_URL:http://localhost:8081}
     stock-signal-path: ${LINE_PLATFORM_STOCK_SIGNAL_PATH:/api/stock-signals/generate}
+    write-api-key-header: ${LINE_PLATFORM_WRITE_API_KEY_HEADER:X-News-Write-Key}
+    write-api-key: ${LINE_PLATFORM_WRITE_API_KEY:}
+  security:
+    enabled: ${LINE_SECURITY_ENABLED:true}
+    admin-api-key-header: ${LINE_ADMIN_API_KEY_HEADER:X-Line-Admin-Key}
+    admin-api-keys: ${LINE_ADMIN_API_KEYS:}
+    admin-rate-limit-per-minute: ${LINE_ADMIN_RATE_LIMIT_PER_MINUTE:30}
+    webhook-rate-limit-per-minute: ${LINE_WEBHOOK_RATE_LIMIT_PER_MINUTE:120}
   # Public frontend analyses list URL. When set, LINE market-analysis pushes
   # include a short excerpt plus a direct detail link under this path.
   public-analysis-base-url: ${LINE_PUBLIC_ANALYSIS_BASE_URL:}

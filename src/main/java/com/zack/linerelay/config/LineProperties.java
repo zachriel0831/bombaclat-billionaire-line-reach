@@ -30,7 +30,7 @@ public record LineProperties(
             apiBase = "https://api.line.me";
         }
         if (platform == null) {
-            platform = new Platform(true, null, null);
+            platform = new Platform(true, null, null, null, null);
         }
         if (push == null) {
             push = new Push(false, true);
@@ -56,14 +56,26 @@ public record LineProperties(
     public record Platform(
             boolean enabled,
             String baseUrl,
-            String stockSignalPath
+            String stockSignalPath,
+            String writeApiKeyHeader,
+            String writeApiKey
     ) {
+        public Platform(boolean enabled, String baseUrl, String stockSignalPath) {
+            this(enabled, baseUrl, stockSignalPath, null, null);
+        }
+
         public Platform {
             if (baseUrl == null || baseUrl.isBlank()) {
                 baseUrl = "http://localhost:8081";
             }
             if (stockSignalPath == null || stockSignalPath.isBlank()) {
                 stockSignalPath = "/api/stock-signals/generate";
+            }
+            if (writeApiKeyHeader == null || writeApiKeyHeader.isBlank()) {
+                writeApiKeyHeader = "X-News-Write-Key";
+            }
+            if (writeApiKey == null) {
+                writeApiKey = "";
             }
         }
     }

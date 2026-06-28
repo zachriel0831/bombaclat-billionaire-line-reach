@@ -1,6 +1,7 @@
 package com.zack.linerelay;
 
 import com.zack.linerelay.config.LineProperties;
+import com.zack.linerelay.config.LineSecurityProperties;
 import com.zack.linerelay.config.PushRateLimitProperties;
 import com.zack.linerelay.config.StockSignalCacheProperties;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +14,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableScheduling
-@EnableConfigurationProperties({LineProperties.class, PushRateLimitProperties.class, StockSignalCacheProperties.class})
+@EnableConfigurationProperties({
+        LineProperties.class,
+        LineSecurityProperties.class,
+        PushRateLimitProperties.class,
+        StockSignalCacheProperties.class
+})
 public class LineRelayApplication {
 
     /**

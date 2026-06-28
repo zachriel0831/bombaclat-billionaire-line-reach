@@ -55,6 +55,7 @@ The command state is in memory. Restarting the service reloads initial values fr
 3. For the free-form analysis prefix `股價分析`, `StockQueryService` keeps the entire trimmed remainder (e.g. `Rocket Lab (RKLB)`) and skips the local Redis cache; the platform model is responsible for resolving names to tickers.
 4. Ticker-mode queries check Redis key `line:stock-signal:cache:<ticker>` and reuse the previous successful reply when present.
 5. On cache miss (or always for the free-form analysis route), `PlatformStockSignalClient` calls `news-platform-api` using `LINE_PLATFORM_BASE_URL` and `LINE_PLATFORM_STOCK_SIGNAL_PATH`.
+   If `news-platform-api` write protection is enabled, configure `LINE_PLATFORM_WRITE_API_KEY` so this outbound call sends `X-News-Write-Key` (or the header named by `LINE_PLATFORM_WRITE_API_KEY_HEADER`).
 6. `news-platform-api` generates the stock signal through the configured model. Stored analyses/signals/events are context only; LINE does not read `t_trade_signals` directly for the answer.
 7. Ticker-mode successful replies are cached in Redis for `LINE_STOCK_SIGNAL_CACHE_TTL`. Free-form analysis replies are not cached locally because the cache key normalizer collapses names like `Rocket Lab (RKLB)` into the same key as `RKLB`.
 8. `LinePushClient.push(STOCK_QUERY, ...)` sends the reply and applies the `STOCK_QUERY` Redis quota.
@@ -80,6 +81,14 @@ Manual command push is different on purpose:
 2. The repository selects the newest row across all dates/slots.
 3. The same `garbled_summary` quality gate runs before selecting test users.
 4. Only `t_bot_user_info.active = 1 AND test_account = 1` users are selected.
+
+## Inbound Protection
+
+`LINE_SECURITY_ENABLED=true` adds the minimum public-edge guardrails:
+
+- `POST /webhook` is rate limited per remote address before controller work. LINE HMAC signature verification remains the authentication layer.
+- `/admin/*` requires `X-Line-Admin-Key` to match one value from `LINE_ADMIN_API_KEYS`.
+- Missing admin keys fail closed with HTTP 503, invalid keys return 401, and rate-limited calls return 429.
 5. `LinePushClient.pushIgnoringToggle(PUBLIC_ANALYSIS, ...)` sends even if normal push is off.
    - The master push toggle is bypassed here, but Redis rate limiting still applies.
 6. No pushed flag or queue state is updated.

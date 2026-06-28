@@ -1,6 +1,7 @@
 package com.zack.linerelay.webhook;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.zack.linerelay.config.InMemoryRateLimiter;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,11 @@ class WebhookControllerTest {
         @Bean
         SignatureVerifier signatureVerifier() {
             return new SignatureVerifier(new com.zack.linerelay.config.LineProperties(SECRET, "token", null, null, null));
+        }
+
+        @Bean
+        InMemoryRateLimiter inMemoryRateLimiter() {
+            return new InMemoryRateLimiter();
         }
     }
 

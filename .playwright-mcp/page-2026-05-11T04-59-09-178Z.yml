@@ -1,0 +1,71 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Market Brief" [ref=e5] [cursor=pointer]:
+      - /url: /
+  - main [ref=e6]:
+    - article [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: 2026-05-11
+        - generic [ref=e11]: pre_tw_open
+        - generic [ref=e12]: gpt-5
+      - heading "2026-05-11 market analysis" [level=1] [ref=e13]
+      - paragraph [ref=e14]: "總經 Regime 當前屬「流動性尚可、信用壓力緩解」對上「油價回升、廣度轉弱」的交錯格局。美股半導體強彈（SOX +5.51%、NDX +2.35%）帶來正向傳導，但美10Y在4.38%、油價走高與廣度分化（scorecard breadth -2）限制風險偏好。今早台股基調偏中性偏多、但容易開高走低。 利率與流動性 - 聯準會：目標區間3.50%-3.75%未變（截至05/10）。 - 利率與美元：美10Y 4.38%，10Y-2Y利差約+48bp；DXY 98.021（+0.12%）。 - 波動與信用：VIX 17.19偏低；scorecard 顯示 credit_stress +2（信用壓力緩解）。但缺HY/IG OAS層級數據，無法確認幅度。 - 流動性：RRP 0.787、銀行準備金約3,032,588（單點偏寬）；但缺TGA與趨勢脈絡，僅能中性偏多解讀。 - 商品與通膨風險：WTI隔夜上漲約+2.98%，scorecard energy -1，對折現率與成長股估值不利。 景氣循環 - 企業面：半導體/AI強勢（SOX +5.51%、NVDA +1.77%、MU +15.51%）顯示科技獲利動能集中，利多上游/供應鏈訂單延續的預期。 - 宏觀面：就業、消費、PMI/ISM本週關鍵數據未到，資料不足，無法判定軟著陸進程是否加速。 - 風險傳導：油價抬頭→通膨/利率上行壓力→高估值板塊折現率上修，若延續恐壓抑終端需求評價。 市場情緒 - 強勢來自大型科技與半導體，廣度指標（breadth -2）顯示資金集中，追價風險高。 - 低VIX（17.19）代表自滿風險上升，結合強勢缺口，今早有「gap-and-fade」概率。 - 信用壓力緩解與流動性單點偏寬支撐風險資產，但證據鏈不完整（缺信用利差、TGA與RRP趨勢），信心需保守。 台股配置 - AI/半導體：偏多但控節奏。美股半導體強勢可帶來開盤動能；若美10Y續上或油價再衝、廣度不改善，強勢股易變成獲利了結的來源。 - 金控：偏多但審慎。長端利率高位與信用壓力緩解利於利差，但亦可能帶來AFS/OCI評價壓力，曲線再陡或利率快升需降風險。 - 航運：基本面拉鋸。油價上行增成本偏空，地緣風險對運價的正面溢價需用SCFI與燃油報價驗證（資料缺口）。 - 中小型股：流動性與低波對情緒有利，但廣度疲弱下不宜追高，等待資金外溢訊號。 - 個股觀察（僅列固定池）： • 2330 台積電：偏多觀察。確認＝SOX續強且USD/TWD不走升、TSM ADR無背離（資料缺口）；失效＝美10Y上行或油價續漲導致開高回落。 • 2882 國泰金：偏多觀察。確認＝信用無惡化、殖利率溫和；失效＝利率急升引發債券評價壓力。 • 2603 長榮：震盪觀察。確認＝地緣溢價推升運價；失效＝油價高企且SCFI未上行。 • 1605 華新：震盪觀察。確認＝資金輪動擴散至循環；失效＝油價與利率同升壓抑成本與估值。 • 4956 光鋐：震盪觀察。確認＝市場廣度改善；失效＝資金持續集中大型科技。 風險與資料缺口 - 風險：油價再升與中東惡化推高殖利率→半導體估值壓縮；美股強彈後缺口回補、低VIX自滿引發開高走低；突發鷹派發言或數據意外上行改變利率路徑；美元走強與外資匯出；地緣降溫且油價回落使航運運價支撐轉弱。 - 資料缺口：台指期夜盤與選擇權未平倉、外資期貨淨部位與Put/Call；USD/TWD 即期與外資匯流；三大法人速報與借券動態；TSM ADR、SOX期貨與NVDA盤前；SCFI與Bunker燃油；OTC與融資融券變化；亞洲時段油價與美債走勢是否延續。 信心等級：low 主要反方觀點：RRP與準備金的單點數據不足以證明寬鬆，在美10Y仍高與油價上行下，高估值半導體可能開高回落而非續漲。 ## 今日個股觀察 固定五檔監控池（t_trade_signals） 資料缺口：目前固定五檔沒有可用的 swing/medium 觀察條件；不可硬湊下單。"
+      - navigation "每日分析切換" [ref=e15]:
+        - link "前一天" [ref=e16] [cursor=pointer]:
+          - /url: /analyses/41
+          - img [ref=e17]
+          - text: 前一天
+        - link "回列表" [ref=e19] [cursor=pointer]:
+          - /url: /analyses
+          - img [ref=e20]
+          - text: 回列表
+        - generic [ref=e21]:
+          - text: 後一天
+          - img [ref=e22]
+  - navigation "主要分類" [ref=e24]:
+    - link "財經" [ref=e25] [cursor=pointer]:
+      - /url: /
+      - img [ref=e26]
+      - generic [ref=e31]: 財經
+    - link "名人動態" [ref=e32] [cursor=pointer]:
+      - /url: /celebrities
+      - img [ref=e33]
+      - generic [ref=e36]: 名人動態
+    - link "政治" [ref=e37] [cursor=pointer]:
+      - /url: /?category=politics
+      - img [ref=e38]
+      - generic [ref=e40]: 政治
+    - link "娛樂" [ref=e41] [cursor=pointer]:
+      - /url: /?category=entertainment
+      - img [ref=e42]
+      - generic [ref=e47]: 娛樂
+  - navigation "議題導覽" [ref=e48]:
+    - generic [ref=e49]:
+      - link "酒駕毒駕／車禍傷亡" [ref=e50] [cursor=pointer]:
+        - /url: /?category=society&topic=drunk_driving_accident
+        - img [ref=e51]
+        - generic [ref=e55]: 酒駕毒駕／車禍傷亡
+      - link "詐騙" [ref=e56] [cursor=pointer]:
+        - /url: /?category=society&topic=fraud
+        - img [ref=e57]
+        - generic [ref=e59]: 詐騙
+      - link "少子化" [ref=e60] [cursor=pointer]:
+        - /url: /?category=society&topic=low_birthrate
+        - img [ref=e61]
+        - generic [ref=e64]: 少子化
+      - link "司法量刑不公" [ref=e65] [cursor=pointer]:
+        - /url: /?category=society&topic=judicial_injustice
+        - img [ref=e66]
+        - generic [ref=e70]: 司法量刑不公
+      - link "醫護過勞／醫療崩潰" [ref=e71] [cursor=pointer]:
+        - /url: /?category=society&topic=healthcare_burden
+        - img [ref=e72]
+        - generic [ref=e76]: 醫護過勞／醫療崩潰
+      - link "高房價／居住正義" [ref=e77] [cursor=pointer]:
+        - /url: /?category=society&topic=housing_justice
+        - img [ref=e78]
+        - generic [ref=e81]: 高房價／居住正義
+      - link "新興毒品／校園毒品" [ref=e82] [cursor=pointer]:
+        - /url: /?category=society&topic=drug_abuse
+        - img [ref=e83]
+        - generic [ref=e86]: 新興毒品／校園毒品

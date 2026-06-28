@@ -1,0 +1,616 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Market Brief" [ref=e5] [cursor=pointer]:
+      - /url: /
+  - main [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - generic [ref=e11]:
+              - generic [ref=e12]:
+                - img [ref=e13]
+                - text: 收集中
+              - generic [ref=e15]:
+                - img [ref=e16]
+                - text: 交通安全
+            - heading "行人地獄" [level=1] [ref=e20]
+            - paragraph [ref=e21]: 酒駕毒駕／車禍傷亡累積互動聚合。這裡收集讀者對每則新聞的情緒與出拳回應，讓議題熱度直接呈現在議題層。
+            - paragraph [ref=e22]: 本議題 128 則新聞 · 0 人回應
+          - generic [ref=e23]:
+            - paragraph [ref=e24]: "0"
+            - paragraph [ref=e25]: 累積拳次數
+        - generic [ref=e27]:
+          - paragraph [ref=e28]: 累積情緒分布
+          - paragraph [ref=e29]: 過去 12 週
+      - generic [ref=e30]:
+        - article [ref=e31]:
+          - link "ETtoday 05/11 18:08 酒駕毒駕／車禍傷亡 墾丁大街打架追車 賓士男酒駕自撞害友「嘔吐物噎死」判1年10月 桃園徐姓男子2023年元旦連假在墾丁酒後與人發生衝突，開賓士載友人追車，途中自撞路邊護欄，造成同車友人詹尚育傷重死亡。屏東地方法院審理後認定，徐男曾有酒駕前科，但死者當時也有飲酒，且雙方已達成和解酌減其刑，依酒駕致人於死罪判處有期徒刑1年10月。 《詳全文...》 原文" [ref=e32] [cursor=pointer]:
+            - /url: https://www.ettoday.net/news/20260512/3164257.htm
+            - generic [ref=e33]:
+              - paragraph [ref=e34]: ETtoday
+              - generic [ref=e35]:
+                - img [ref=e36]
+                - text: 05/11 18:08
+            - generic [ref=e41]: 酒駕毒駕／車禍傷亡
+            - heading "墾丁大街打架追車 賓士男酒駕自撞害友「嘔吐物噎死」判1年10月" [level=2] [ref=e42]
+            - paragraph [ref=e43]: 桃園徐姓男子2023年元旦連假在墾丁酒後與人發生衝突，開賓士載友人追車，途中自撞路邊護欄，造成同車友人詹尚育傷重死亡。屏東地方法院審理後認定，徐男曾有酒駕前科，但死者當時也有飲酒，且雙方已達成和解酌減其刑，依酒駕致人於死罪判處有期徒刑1年10月。 《詳全文...》
+            - generic [ref=e44]:
+              - text: 原文
+              - img [ref=e45]
+          - generic [ref=e49]:
+            - paragraph [ref=e51]: 讀完這則新聞，你的感受是？
+            - generic [ref=e52]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e53]:
+                - generic [ref=e54]: 🔥
+                - generic [ref=e55]: 憤怒
+                - generic [ref=e56]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e57]:
+                - generic [ref=e58]: 🌀
+                - generic [ref=e59]: 無力
+                - generic [ref=e60]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e61]:
+                - generic [ref=e62]: ⚡
+                - generic [ref=e63]: 擔憂
+                - generic [ref=e64]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e65]:
+                - generic [ref=e66]: ❓
+                - generic [ref=e67]: 荒謬
+                - generic [ref=e68]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e69]:
+              - generic [ref=e70]:
+                - img [ref=e72]
+                - generic [ref=e73]:
+                  - generic [ref=e74]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e75]:
+                - generic [ref=e76]: "0"
+                - generic [ref=e77]: +1 拳
+            - generic [ref=e78]:
+              - paragraph [ref=e79]: 點選上方感受即送出
+              - button "略過" [ref=e80]
+        - article [ref=e81]:
+          - link "TVBS 05/11 14:57 酒駕毒駕／車禍傷亡 影音／休旅車疑搶快 闖紅燈擦撞機車 騎士倒地 原文" [ref=e82] [cursor=pointer]:
+            - /url: https://news.tvbs.com.tw/local/3201495
+            - generic [ref=e83]:
+              - paragraph [ref=e84]: TVBS
+              - generic [ref=e85]:
+                - img [ref=e86]
+                - text: 05/11 14:57
+            - generic [ref=e91]: 酒駕毒駕／車禍傷亡
+            - heading "影音／休旅車疑搶快 闖紅燈擦撞機車 騎士倒地" [level=2] [ref=e92]
+            - generic [ref=e93]:
+              - text: 原文
+              - img [ref=e94]
+          - generic [ref=e98]:
+            - paragraph [ref=e100]: 讀完這則新聞，你的感受是？
+            - generic [ref=e101]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e102]:
+                - generic [ref=e103]: 🔥
+                - generic [ref=e104]: 憤怒
+                - generic [ref=e105]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e106]:
+                - generic [ref=e107]: 🌀
+                - generic [ref=e108]: 無力
+                - generic [ref=e109]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e110]:
+                - generic [ref=e111]: ⚡
+                - generic [ref=e112]: 擔憂
+                - generic [ref=e113]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e114]:
+                - generic [ref=e115]: ❓
+                - generic [ref=e116]: 荒謬
+                - generic [ref=e117]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e118]:
+              - generic [ref=e119]:
+                - img [ref=e121]
+                - generic [ref=e122]:
+                  - generic [ref=e123]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e124]:
+                - generic [ref=e125]: "0"
+                - generic [ref=e126]: +1 拳
+            - generic [ref=e127]:
+              - paragraph [ref=e128]: 點選上方感受即送出
+              - button "略過" [ref=e129]
+        - article [ref=e130]:
+          - link "cna 05/11 14:15 酒駕毒駕／車禍傷亡 毒駕女撞死警二審否認殺人罪 死者父盼殺人償命 （中央社記者謝君臨台北11日電）女子陳嘉瑩毒駕拒檢，衝撞、拖行派出所長劉宗鑫致死遭判死刑。二審今天首度開庭，被提訊的陳嘉瑩否認殺人罪，稱只構成過失致死罪。死者父親說，撞死執法者難道不是最嚴重犯罪。 原文" [ref=e131] [cursor=pointer]:
+            - /url: https://www.cna.com.tw/news/asoc/202605110330.aspx
+            - generic [ref=e132]:
+              - paragraph [ref=e133]: cna
+              - generic [ref=e134]:
+                - img [ref=e135]
+                - text: 05/11 14:15
+            - generic [ref=e140]: 酒駕毒駕／車禍傷亡
+            - heading "毒駕女撞死警二審否認殺人罪 死者父盼殺人償命" [level=2] [ref=e141]
+            - paragraph [ref=e142]: （中央社記者謝君臨台北11日電）女子陳嘉瑩毒駕拒檢，衝撞、拖行派出所長劉宗鑫致死遭判死刑。二審今天首度開庭，被提訊的陳嘉瑩否認殺人罪，稱只構成過失致死罪。死者父親說，撞死執法者難道不是最嚴重犯罪。
+            - generic [ref=e143]:
+              - text: 原文
+              - img [ref=e144]
+          - generic [ref=e148]:
+            - paragraph [ref=e150]: 讀完這則新聞，你的感受是？
+            - generic [ref=e151]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e152]:
+                - generic [ref=e153]: 🔥
+                - generic [ref=e154]: 憤怒
+                - generic [ref=e155]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e156]:
+                - generic [ref=e157]: 🌀
+                - generic [ref=e158]: 無力
+                - generic [ref=e159]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e160]:
+                - generic [ref=e161]: ⚡
+                - generic [ref=e162]: 擔憂
+                - generic [ref=e163]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e164]:
+                - generic [ref=e165]: ❓
+                - generic [ref=e166]: 荒謬
+                - generic [ref=e167]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e168]:
+              - generic [ref=e169]:
+                - img [ref=e171]
+                - generic [ref=e172]:
+                  - generic [ref=e173]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e174]:
+                - generic [ref=e175]: "0"
+                - generic [ref=e176]: +1 拳
+            - generic [ref=e177]:
+              - paragraph [ref=e178]: 點選上方感受即送出
+              - button "略過" [ref=e179]
+        - article [ref=e180]:
+          - link "ebc 05/11 13:00 酒駕毒駕／車禍傷亡 毒駕撞死警所長被判死！陳嘉瑩上訴辯過失致死 原文" [ref=e181] [cursor=pointer]:
+            - /url: https://news.ebc.net.tw/news/society/551198
+            - generic [ref=e182]:
+              - paragraph [ref=e183]: ebc
+              - generic [ref=e184]:
+                - img [ref=e185]
+                - text: 05/11 13:00
+            - generic [ref=e190]: 酒駕毒駕／車禍傷亡
+            - heading "毒駕撞死警所長被判死！陳嘉瑩上訴辯過失致死" [level=2] [ref=e191]
+            - generic [ref=e192]:
+              - text: 原文
+              - img [ref=e193]
+          - generic [ref=e197]:
+            - paragraph [ref=e199]: 讀完這則新聞，你的感受是？
+            - generic [ref=e200]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e201]:
+                - generic [ref=e202]: 🔥
+                - generic [ref=e203]: 憤怒
+                - generic [ref=e204]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e205]:
+                - generic [ref=e206]: 🌀
+                - generic [ref=e207]: 無力
+                - generic [ref=e208]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e209]:
+                - generic [ref=e210]: ⚡
+                - generic [ref=e211]: 擔憂
+                - generic [ref=e212]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e213]:
+                - generic [ref=e214]: ❓
+                - generic [ref=e215]: 荒謬
+                - generic [ref=e216]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e217]:
+              - generic [ref=e218]:
+                - img [ref=e220]
+                - generic [ref=e221]:
+                  - generic [ref=e222]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e223]:
+                - generic [ref=e224]: "0"
+                - generic [ref=e225]: +1 拳
+            - generic [ref=e226]:
+              - paragraph [ref=e227]: 點選上方感受即送出
+              - button "略過" [ref=e228]
+        - article [ref=e229]:
+          - link "TVBS 05/11 11:41 酒駕毒駕／車禍傷亡 宜蘭小貨車猛撞工程車！消防破壞剪救出受困駕駛 3人送醫 原文" [ref=e230] [cursor=pointer]:
+            - /url: https://news.tvbs.com.tw/local/3201394
+            - generic [ref=e231]:
+              - paragraph [ref=e232]: TVBS
+              - generic [ref=e233]:
+                - img [ref=e234]
+                - text: 05/11 11:41
+            - generic [ref=e239]: 酒駕毒駕／車禍傷亡
+            - heading "宜蘭小貨車猛撞工程車！消防破壞剪救出受困駕駛 3人送醫" [level=2] [ref=e240]
+            - generic [ref=e241]:
+              - text: 原文
+              - img [ref=e242]
+          - generic [ref=e246]:
+            - paragraph [ref=e248]: 讀完這則新聞，你的感受是？
+            - generic [ref=e249]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e250]:
+                - generic [ref=e251]: 🔥
+                - generic [ref=e252]: 憤怒
+                - generic [ref=e253]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e254]:
+                - generic [ref=e255]: 🌀
+                - generic [ref=e256]: 無力
+                - generic [ref=e257]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e258]:
+                - generic [ref=e259]: ⚡
+                - generic [ref=e260]: 擔憂
+                - generic [ref=e261]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e262]:
+                - generic [ref=e263]: ❓
+                - generic [ref=e264]: 荒謬
+                - generic [ref=e265]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e266]:
+              - generic [ref=e267]:
+                - img [ref=e269]
+                - generic [ref=e270]:
+                  - generic [ref=e271]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e272]:
+                - generic [ref=e273]: "0"
+                - generic [ref=e274]: +1 拳
+            - generic [ref=e275]:
+              - paragraph [ref=e276]: 點選上方感受即送出
+              - button "略過" [ref=e277]
+        - article [ref=e278]:
+          - link "自由時報 05/11 10:46 酒駕毒駕／車禍傷亡 蘭陽大橋除草工程車遭追撞 貨車駕駛受困車內、2工人受傷 宜蘭縣蘭陽大橋南下車道今天（11日）下午4點多，發生小貨車追撞除草工程車，小貨車李姓駕駛受困車內，救護人員用破壞器材協助脫困，另有2名除草工人被波及，3名傷者均意識清楚，由救護...… 原文" [ref=e279] [cursor=pointer]:
+            - /url: https://news.ltn.com.tw/news/society/breakingnews/5433364
+            - generic [ref=e280]:
+              - paragraph [ref=e281]: 自由時報
+              - generic [ref=e282]:
+                - img [ref=e283]
+                - text: 05/11 10:46
+            - generic [ref=e288]: 酒駕毒駕／車禍傷亡
+            - heading "蘭陽大橋除草工程車遭追撞 貨車駕駛受困車內、2工人受傷" [level=2] [ref=e289]
+            - paragraph [ref=e290]: 宜蘭縣蘭陽大橋南下車道今天（11日）下午4點多，發生小貨車追撞除草工程車，小貨車李姓駕駛受困車內，救護人員用破壞器材協助脫困，另有2名除草工人被波及，3名傷者均意識清楚，由救護...…
+            - generic [ref=e291]:
+              - text: 原文
+              - img [ref=e292]
+          - generic [ref=e296]:
+            - paragraph [ref=e298]: 讀完這則新聞，你的感受是？
+            - generic [ref=e299]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e300]:
+                - generic [ref=e301]: 🔥
+                - generic [ref=e302]: 憤怒
+                - generic [ref=e303]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e304]:
+                - generic [ref=e305]: 🌀
+                - generic [ref=e306]: 無力
+                - generic [ref=e307]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e308]:
+                - generic [ref=e309]: ⚡
+                - generic [ref=e310]: 擔憂
+                - generic [ref=e311]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e312]:
+                - generic [ref=e313]: ❓
+                - generic [ref=e314]: 荒謬
+                - generic [ref=e315]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e316]:
+              - generic [ref=e317]:
+                - img [ref=e319]
+                - generic [ref=e320]:
+                  - generic [ref=e321]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e322]:
+                - generic [ref=e323]: "0"
+                - generic [ref=e324]: +1 拳
+            - generic [ref=e325]:
+              - paragraph [ref=e326]: 點選上方感受即送出
+              - button "略過" [ref=e327]
+        - article [ref=e328]:
+          - link "自由時報 05/11 10:44 酒駕毒駕／車禍傷亡 轟！下班時間國3彰化台中段貨車爆胎撞聯結車 後方一度回堵2公里 轟！1輛小貨車今天（11日）傍晚行經國道3號彰化與台中交界處路段時，疑因爆胎突然失控撞擊外側車道的半聯結車，2輛車撞在一起打橫在國道內側車道上，迅速造成後方車輛回堵，壅塞車潮一...… 原文" [ref=e329] [cursor=pointer]:
+            - /url: https://news.ltn.com.tw/news/society/breakingnews/5433376
+            - generic [ref=e330]:
+              - paragraph [ref=e331]: 自由時報
+              - generic [ref=e332]:
+                - img [ref=e333]
+                - text: 05/11 10:44
+            - generic [ref=e338]: 酒駕毒駕／車禍傷亡
+            - heading "轟！下班時間國3彰化台中段貨車爆胎撞聯結車 後方一度回堵2公里" [level=2] [ref=e339]
+            - paragraph [ref=e340]: 轟！1輛小貨車今天（11日）傍晚行經國道3號彰化與台中交界處路段時，疑因爆胎突然失控撞擊外側車道的半聯結車，2輛車撞在一起打橫在國道內側車道上，迅速造成後方車輛回堵，壅塞車潮一...…
+            - generic [ref=e341]:
+              - text: 原文
+              - img [ref=e342]
+          - generic [ref=e346]:
+            - paragraph [ref=e348]: 讀完這則新聞，你的感受是？
+            - generic [ref=e349]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e350]:
+                - generic [ref=e351]: 🔥
+                - generic [ref=e352]: 憤怒
+                - generic [ref=e353]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e354]:
+                - generic [ref=e355]: 🌀
+                - generic [ref=e356]: 無力
+                - generic [ref=e357]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e358]:
+                - generic [ref=e359]: ⚡
+                - generic [ref=e360]: 擔憂
+                - generic [ref=e361]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e362]:
+                - generic [ref=e363]: ❓
+                - generic [ref=e364]: 荒謬
+                - generic [ref=e365]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e366]:
+              - generic [ref=e367]:
+                - img [ref=e369]
+                - generic [ref=e370]:
+                  - generic [ref=e371]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e372]:
+                - generic [ref=e373]: "0"
+                - generic [ref=e374]: +1 拳
+            - generic [ref=e375]:
+              - paragraph [ref=e376]: 點選上方感受即送出
+              - button "略過" [ref=e377]
+        - article [ref=e378]:
+          - link "TVBS 05/11 10:08 酒駕毒駕／車禍傷亡 女毒蟲「撞死警所長」上訴逃死 死者父爆怒嗆律師團：廢死呷屎 原文" [ref=e379] [cursor=pointer]:
+            - /url: https://news.tvbs.com.tw/local/3201282
+            - generic [ref=e380]:
+              - paragraph [ref=e381]: TVBS
+              - generic [ref=e382]:
+                - img [ref=e383]
+                - text: 05/11 10:08
+            - generic [ref=e388]: 酒駕毒駕／車禍傷亡
+            - heading "女毒蟲「撞死警所長」上訴逃死 死者父爆怒嗆律師團：廢死呷屎" [level=2] [ref=e389]
+            - generic [ref=e390]:
+              - text: 原文
+              - img [ref=e391]
+          - generic [ref=e395]:
+            - paragraph [ref=e397]: 讀完這則新聞，你的感受是？
+            - generic [ref=e398]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e399]:
+                - generic [ref=e400]: 🔥
+                - generic [ref=e401]: 憤怒
+                - generic [ref=e402]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e403]:
+                - generic [ref=e404]: 🌀
+                - generic [ref=e405]: 無力
+                - generic [ref=e406]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e407]:
+                - generic [ref=e408]: ⚡
+                - generic [ref=e409]: 擔憂
+                - generic [ref=e410]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e411]:
+                - generic [ref=e412]: ❓
+                - generic [ref=e413]: 荒謬
+                - generic [ref=e414]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e415]:
+              - generic [ref=e416]:
+                - img [ref=e418]
+                - generic [ref=e419]:
+                  - generic [ref=e420]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e421]:
+                - generic [ref=e422]: "0"
+                - generic [ref=e423]: +1 拳
+            - generic [ref=e424]:
+              - paragraph [ref=e425]: 點選上方感受即送出
+              - button "略過" [ref=e426]
+        - article [ref=e427]:
+          - link "TVBS 05/11 09:44 酒駕毒駕／車禍傷亡 閃動物撞爛車頭還爆胎！金門男臉部掛彩 一驗竟還酒駕 原文" [ref=e428] [cursor=pointer]:
+            - /url: https://news.tvbs.com.tw/local/3201265
+            - generic [ref=e429]:
+              - paragraph [ref=e430]: TVBS
+              - generic [ref=e431]:
+                - img [ref=e432]
+                - text: 05/11 09:44
+            - generic [ref=e437]: 酒駕毒駕／車禍傷亡
+            - heading "閃動物撞爛車頭還爆胎！金門男臉部掛彩 一驗竟還酒駕" [level=2] [ref=e438]
+            - generic [ref=e439]:
+              - text: 原文
+              - img [ref=e440]
+          - generic [ref=e444]:
+            - paragraph [ref=e446]: 讀完這則新聞，你的感受是？
+            - generic [ref=e447]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e448]:
+                - generic [ref=e449]: 🔥
+                - generic [ref=e450]: 憤怒
+                - generic [ref=e451]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e452]:
+                - generic [ref=e453]: 🌀
+                - generic [ref=e454]: 無力
+                - generic [ref=e455]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e456]:
+                - generic [ref=e457]: ⚡
+                - generic [ref=e458]: 擔憂
+                - generic [ref=e459]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e460]:
+                - generic [ref=e461]: ❓
+                - generic [ref=e462]: 荒謬
+                - generic [ref=e463]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e464]:
+              - generic [ref=e465]:
+                - img [ref=e467]
+                - generic [ref=e468]:
+                  - generic [ref=e469]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e470]:
+                - generic [ref=e471]: "0"
+                - generic [ref=e472]: +1 拳
+            - generic [ref=e473]:
+              - paragraph [ref=e474]: 點選上方感受即送出
+              - button "略過" [ref=e475]
+        - article [ref=e476]:
+          - link "自由時報 05/11 09:40 酒駕毒駕／車禍傷亡 汐止女騎士「鬼切」2車道 小黃運將煞不住直接撞飛 新北市1名鍾姓女騎士今日中午12時26分騎車行經大同路一段與樟樹二路口時，突然從慢車道左切2車道，跑到內側車道。後方周姓計程車司機反應不及、直接撞上，導致騎士頭部撕裂傷，暫無生...… 原文" [ref=e477] [cursor=pointer]:
+            - /url: https://news.ltn.com.tw/news/society/breakingnews/5433263
+            - generic [ref=e478]:
+              - paragraph [ref=e479]: 自由時報
+              - generic [ref=e480]:
+                - img [ref=e481]
+                - text: 05/11 09:40
+            - generic [ref=e486]: 酒駕毒駕／車禍傷亡
+            - heading "汐止女騎士「鬼切」2車道 小黃運將煞不住直接撞飛" [level=2] [ref=e487]
+            - paragraph [ref=e488]: 新北市1名鍾姓女騎士今日中午12時26分騎車行經大同路一段與樟樹二路口時，突然從慢車道左切2車道，跑到內側車道。後方周姓計程車司機反應不及、直接撞上，導致騎士頭部撕裂傷，暫無生...…
+            - generic [ref=e489]:
+              - text: 原文
+              - img [ref=e490]
+          - generic [ref=e494]:
+            - paragraph [ref=e496]: 讀完這則新聞，你的感受是？
+            - generic [ref=e497]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e498]:
+                - generic [ref=e499]: 🔥
+                - generic [ref=e500]: 憤怒
+                - generic [ref=e501]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e502]:
+                - generic [ref=e503]: 🌀
+                - generic [ref=e504]: 無力
+                - generic [ref=e505]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e506]:
+                - generic [ref=e507]: ⚡
+                - generic [ref=e508]: 擔憂
+                - generic [ref=e509]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e510]:
+                - generic [ref=e511]: ❓
+                - generic [ref=e512]: 荒謬
+                - generic [ref=e513]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e514]:
+              - generic [ref=e515]:
+                - img [ref=e517]
+                - generic [ref=e518]:
+                  - generic [ref=e519]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e520]:
+                - generic [ref=e521]: "0"
+                - generic [ref=e522]: +1 拳
+            - generic [ref=e523]:
+              - paragraph [ref=e524]: 點選上方感受即送出
+              - button "略過" [ref=e525]
+        - article [ref=e526]:
+          - link "ETtoday 05/11 09:28 酒駕毒駕／車禍傷亡 屏東九如鄉路口2車深夜對撞1翻覆 民宅前車輛衰遭波及 九如鄉10日深夜發生路口交通事故，兩輛自小客車行經閃光號誌路口時發生猛烈碰撞，其中一車當場翻覆後，再波及停放民宅騎樓前車輛，造成兩名駕駛受傷送醫，雙方均無酒駕情形，詳細肇事原因仍待進一步釐清。 《詳全文...》 原文" [ref=e527] [cursor=pointer]:
+            - /url: https://www.ettoday.net/news/20260511/3164127.htm
+            - generic [ref=e528]:
+              - paragraph [ref=e529]: ETtoday
+              - generic [ref=e530]:
+                - img [ref=e531]
+                - text: 05/11 09:28
+            - generic [ref=e536]: 酒駕毒駕／車禍傷亡
+            - heading "屏東九如鄉路口2車深夜對撞1翻覆 民宅前車輛衰遭波及" [level=2] [ref=e537]
+            - paragraph [ref=e538]: 九如鄉10日深夜發生路口交通事故，兩輛自小客車行經閃光號誌路口時發生猛烈碰撞，其中一車當場翻覆後，再波及停放民宅騎樓前車輛，造成兩名駕駛受傷送醫，雙方均無酒駕情形，詳細肇事原因仍待進一步釐清。 《詳全文...》
+            - generic [ref=e539]:
+              - text: 原文
+              - img [ref=e540]
+          - generic [ref=e544]:
+            - paragraph [ref=e546]: 讀完這則新聞，你的感受是？
+            - generic [ref=e547]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e548]:
+                - generic [ref=e549]: 🔥
+                - generic [ref=e550]: 憤怒
+                - generic [ref=e551]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e552]:
+                - generic [ref=e553]: 🌀
+                - generic [ref=e554]: 無力
+                - generic [ref=e555]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e556]:
+                - generic [ref=e557]: ⚡
+                - generic [ref=e558]: 擔憂
+                - generic [ref=e559]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e560]:
+                - generic [ref=e561]: ❓
+                - generic [ref=e562]: 荒謬
+                - generic [ref=e563]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e564]:
+              - generic [ref=e565]:
+                - img [ref=e567]
+                - generic [ref=e568]:
+                  - generic [ref=e569]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e570]:
+                - generic [ref=e571]: "0"
+                - generic [ref=e572]: +1 拳
+            - generic [ref=e573]:
+              - paragraph [ref=e574]: 點選上方感受即送出
+              - button "略過" [ref=e575]
+        - article [ref=e576]:
+          - link "ETtoday 05/11 09:11 酒駕毒駕／車禍傷亡 金門休旅車撞民宅圍牆！駕駛稱閃避動物...驗出酒精反應慘了 金門縣金城鎮前水頭路段今（11）日下午發生一起休旅車自撞事故，一名朱姓男子（34歲）駕車行經西海路一段往水頭碼頭方向時，疑因閃避突然竄出的動物，導致車輛失控偏右撞上路旁民宅，造成駕駛臉部撕裂傷送醫，警方到場酒測後發現駕駛有酒精反應，訊後依法送辦。 《詳全文...》 原文" [ref=e577] [cursor=pointer]:
+            - /url: https://www.ettoday.net/news/20260511/3164102.htm
+            - generic [ref=e578]:
+              - paragraph [ref=e579]: ETtoday
+              - generic [ref=e580]:
+                - img [ref=e581]
+                - text: 05/11 09:11
+            - generic [ref=e586]: 酒駕毒駕／車禍傷亡
+            - heading "金門休旅車撞民宅圍牆！駕駛稱閃避動物...驗出酒精反應慘了" [level=2] [ref=e587]
+            - paragraph [ref=e588]: 金門縣金城鎮前水頭路段今（11）日下午發生一起休旅車自撞事故，一名朱姓男子（34歲）駕車行經西海路一段往水頭碼頭方向時，疑因閃避突然竄出的動物，導致車輛失控偏右撞上路旁民宅，造成駕駛臉部撕裂傷送醫，警方到場酒測後發現駕駛有酒精反應，訊後依法送辦。 《詳全文...》
+            - generic [ref=e589]:
+              - text: 原文
+              - img [ref=e590]
+          - generic [ref=e594]:
+            - paragraph [ref=e596]: 讀完這則新聞，你的感受是？
+            - generic [ref=e597]:
+              - button "🔥 憤怒 覺得有人該負責" [ref=e598]:
+                - generic [ref=e599]: 🔥
+                - generic [ref=e600]: 憤怒
+                - generic [ref=e601]: 覺得有人該負責
+              - button "🌀 無力 改變不了什麼" [ref=e602]:
+                - generic [ref=e603]: 🌀
+                - generic [ref=e604]: 無力
+                - generic [ref=e605]: 改變不了什麼
+              - button "⚡ 擔憂 問題會惡化" [ref=e606]:
+                - generic [ref=e607]: ⚡
+                - generic [ref=e608]: 擔憂
+                - generic [ref=e609]: 問題會惡化
+              - button "❓ 荒謬 不可置信" [ref=e610]:
+                - generic [ref=e611]: ❓
+                - generic [ref=e612]: 荒謬
+                - generic [ref=e613]: 不可置信
+            - button "打沙袋 這個情緒要去哪裡？ 0 +1 拳" [ref=e614]:
+              - generic [ref=e615]:
+                - img [ref=e617]
+                - generic [ref=e618]:
+                  - generic [ref=e619]: 打沙袋
+                  - text: 這個情緒要去哪裡？
+              - generic [ref=e620]:
+                - generic [ref=e621]: "0"
+                - generic [ref=e622]: +1 拳
+            - generic [ref=e623]:
+              - paragraph [ref=e624]: 點選上方感受即送出
+              - button "略過" [ref=e625]
+      - button "Load more" [ref=e630]
+  - navigation "主要分類" [ref=e631]:
+    - link "財經" [ref=e632] [cursor=pointer]:
+      - /url: /
+      - img [ref=e633]
+      - generic [ref=e638]: 財經
+    - link "名人動態" [ref=e639] [cursor=pointer]:
+      - /url: /celebrities
+      - img [ref=e640]
+      - generic [ref=e643]: 名人動態
+    - link "政治" [ref=e644] [cursor=pointer]:
+      - /url: /?category=politics
+      - img [ref=e645]
+      - generic [ref=e647]: 政治
+    - link "娛樂" [ref=e648] [cursor=pointer]:
+      - /url: /?category=entertainment
+      - img [ref=e649]
+      - generic [ref=e654]: 娛樂
+  - navigation "議題導覽" [ref=e655]:
+    - generic [ref=e656]:
+      - link "酒駕毒駕／車禍傷亡 135" [ref=e657] [cursor=pointer]:
+        - /url: /?category=society&topic=drunk_driving_accident
+        - img [ref=e658]
+        - generic [ref=e662]: 酒駕毒駕／車禍傷亡
+        - generic [ref=e663]: "135"
+      - link "詐騙 48" [ref=e664] [cursor=pointer]:
+        - /url: /?category=society&topic=fraud
+        - img [ref=e665]
+        - generic [ref=e667]: 詐騙
+        - generic [ref=e668]: "48"
+      - link "少子化 0" [ref=e669] [cursor=pointer]:
+        - /url: /?category=society&topic=low_birthrate
+        - img [ref=e670]
+        - generic [ref=e673]: 少子化
+        - generic [ref=e674]: "0"
+      - link "司法量刑不公 15" [ref=e675] [cursor=pointer]:
+        - /url: /?category=society&topic=judicial_injustice
+        - img [ref=e676]
+        - generic [ref=e680]: 司法量刑不公
+        - generic [ref=e681]: "15"
+      - link "醫護過勞／醫療崩潰 3" [ref=e682] [cursor=pointer]:
+        - /url: /?category=society&topic=healthcare_burden
+        - img [ref=e683]
+        - generic [ref=e687]: 醫護過勞／醫療崩潰
+        - generic [ref=e688]: "3"
+      - link "高房價／居住正義 0" [ref=e689] [cursor=pointer]:
+        - /url: /?category=society&topic=housing_justice
+        - img [ref=e690]
+        - generic [ref=e693]: 高房價／居住正義
+        - generic [ref=e694]: "0"
+      - link "新興毒品／校園毒品 6" [ref=e695] [cursor=pointer]:
+        - /url: /?category=society&topic=drug_abuse
+        - img [ref=e696]
+        - generic [ref=e699]: 新興毒品／校園毒品
+        - generic [ref=e700]: "6"

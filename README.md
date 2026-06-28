@@ -56,6 +56,13 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_PLATFORM_ENABLED` | no | Enables real-time stock-query calls to `news-platform-api`. Default `true`. |
 | `LINE_PLATFORM_BASE_URL` | no | Middle-office API base URL. Default `http://localhost:8081`. |
 | `LINE_PLATFORM_STOCK_SIGNAL_PATH` | no | Real-time stock signal generation path. Default `/api/stock-signals/generate`. |
+| `LINE_PLATFORM_WRITE_API_KEY_HEADER` | no | Header used when calling protected write endpoints on `news-platform-api`. Default `X-News-Write-Key`. |
+| `LINE_PLATFORM_WRITE_API_KEY` | when platform write security on | API key sent to `news-platform-api` for stock-signal generation. |
+| `LINE_SECURITY_ENABLED` | no | Enables inbound admin/webhook protection. Default `true`. |
+| `LINE_ADMIN_API_KEY_HEADER` | no | Header required for `/admin/*`. Default `X-Line-Admin-Key`. |
+| `LINE_ADMIN_API_KEYS` | when admin endpoints are exposed | Comma-separated admin keys. Empty keys fail closed with HTTP 503. |
+| `LINE_ADMIN_RATE_LIMIT_PER_MINUTE` | no | Per-key `/admin/*` in-memory rate limit. Default `30`. |
+| `LINE_WEBHOOK_RATE_LIMIT_PER_MINUTE` | no | Per-remote-address `/webhook` in-memory rate limit before LINE signature verification. Default `120`. |
 | `PORT` | no | Defaults to `8080` |
 | `LINE_PUSH_ENABLED` | no | Master push toggle. Default `true` — set to `false` to log payloads without calling LINE. |
 | `LINE_PUSH_TEST_ONLY` | no | Target safety toggle. Default `true` — only push active `t_bot_user_info` rows where `test_account = 1`. Set `false` to include all active groups and users. |
@@ -151,6 +158,7 @@ Liveness probe. Returns JSON `{ "status": "ok", ... }`.
 
 LINE webhook receiver.
 
+- Rate limited by remote address when `LINE_SECURITY_ENABLED=true`.
 - Verifies `X-Line-Signature` against the request body using HMAC-SHA256 and `LINE_CHANNEL_SECRET`.
 - Returns `401 invalid_signature` on mismatch, `400 invalid_body` on malformed JSON, `200 accepted` on success.
 - Parses each event (`message`, `follow`, `unfollow`, `join`, `leave`, `memberJoined`, `memberLeft`) and, when `LINE_RELAY_MYSQL_ENABLED=true`, upserts group/user state into `t_bot_group_info` / `t_bot_user_info`:
@@ -170,6 +178,8 @@ LINE webhook receiver.
 - With MySQL disabled, events are logged only; no rows are written.
 
 ### Admin endpoints (registered only when `LINE_RELAY_MYSQL_ENABLED=true`)
+
+All `/admin/*` endpoints require `X-Line-Admin-Key` to match one value in `LINE_ADMIN_API_KEYS` when `LINE_SECURITY_ENABLED=true`. Empty admin keys fail closed with HTTP 503, invalid keys return 401, and per-key throttling returns 429.
 
 #### `GET /admin/list-targets`
 
