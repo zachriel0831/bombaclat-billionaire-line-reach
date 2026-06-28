@@ -24,6 +24,7 @@ application-local.properties
 *.log
 logs/
 runtime/
+.playwright-mcp/
 
 # Test reports
 **/surefire-reports/
