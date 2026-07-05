@@ -47,6 +47,11 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
 ## Important Runtime Rules
 
 - `LINE_PUSH_ENABLED` controls normal scheduled/admin pushes.
+- Market-analysis LINE links should use the public frontend base:
+  `LINE_PUBLIC_ANALYSIS_BASE_URL=https://011b-220-141-219-53.ngrok-free.app/analyses`.
+- Before pushing analysis after an ngrok outage, verify the fixed frontend URL and
+  the exact detail URL, then confirm the analysis row is not garbled and has
+  `push_enabled = 1`.
 - `LINE_PUSH_TEST_ONLY=true` sends only to active `t_bot_user_info` rows where `test_account = 1`; groups are excluded.
 - `LINE_PUSH_RATE_LIMIT_ENABLED=true` turns on Redis-backed per-target daily caps before the LINE API call is made.
 - Redis caps are keyed by `PushMessageType`: `PUBLIC_ANALYSIS` defaults to 2/day and `STOCK_QUERY` defaults to 3/day.
@@ -68,6 +73,8 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
 - Redis-specific rule:
   - The global push cap is keyed by LINE target ID, Taipei date, and `PushMessageType`, so public analysis and stock-query replies do not consume each other's quota.
 - LINE Console local testing should use `ngrok http 8080` and webhook URL `https://<ngrok>/webhook`.
+- `/admin/*` needs `X-Line-Admin-Key`; if local `.env` has no admin key, use a
+  temporary process env key for manual ops rather than printing or committing it.
 
 ## Coding Guidance
 
