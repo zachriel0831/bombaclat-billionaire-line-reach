@@ -60,7 +60,7 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
   - `測試西卡卡` enables push and forces test-only mode.
   - `關閉西卡卡` disables normal pushes.
   - `西卡卡推送` immediately pushes the latest `t_market_analyses` row to active test users only, bypassing the normal push toggle and not marking anything as pushed.
-  - `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, and `西卡卡股票 <代號>` reply with the latest active `t_trade_signals` row.
+  - `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, and `西卡卡股票 <代號>` first reuse a successful Redis-cached reply when present, otherwise call `news-platform-api` `/api/stock-signals/generate` for a fresh response. This path still uses the `STOCK_QUERY` Redis quota.
   - `股價分析 <代號或名稱>` (half-width or full-width space required between prefix and content) sends the entire trimmed remainder as a free-form query (e.g. `股價分析 Rocket Lab (RKLB)`) to `news-platform-api` `/api/stock-signals/generate`. The local Redis cache is bypassed for this route because the cache key normalizer would collapse "Rocket Lab (RKLB)" and "RKLB" together. The reply uses the same `STOCK_QUERY` Redis quota and renders with the stock-analysis template under `skills/line-brief-format-skill/line-stock-analysis.md`.
 - Schedule-specific rules:
   - TW open + relevant U.S. close session open: weekdays push `pre_tw_open`; Saturdays push `us_close` after the Codex/data-collecting guard has had time to write the row.

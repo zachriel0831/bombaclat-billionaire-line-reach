@@ -169,7 +169,7 @@ LINE webhook receiver.
   - `測試西卡卡` → enable push and force test-only targets.
   - `關閉西卡卡` → disable push.
   - `西卡卡推送` → immediately push the latest `t_market_analyses` row to active test users only, without marking it as pushed.
-  - `股票 2330`, `個股 2330`, `查股 NVDA`, or `西卡卡股票 2330` → reply to the source user/group with the latest active `t_trade_signals` row, using the `STOCK_QUERY` Redis quota.
+  - `股票 2330`, `個股 2330`, `查股 NVDA`, or `西卡卡股票 2330` → reply to the source user/group with a Redis-cached reply when available, otherwise call `news-platform-api` `/api/stock-signals/generate` for a fresh response. This path uses the `STOCK_QUERY` Redis quota.
   - `股價分析 <代號或名稱>` (例如 `股價分析 Rocket Lab (RKLB)`、`股價分析 2330`) → 必須在前綴與內容之間有半形或全形空白才會匹配。後段整段 trim 後直接丟給 `news-platform-api`,跳過本地 Redis cache(避免名稱被 ticker key 正規化壓縮)。仍受 `STOCK_QUERY` 配額限制。
 - Response body includes `events`, `users`, and `groups` counts for observability.
 - Current stock-query behavior:

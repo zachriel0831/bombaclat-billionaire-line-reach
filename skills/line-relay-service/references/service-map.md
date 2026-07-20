@@ -16,7 +16,7 @@
 4. `BotTargetRepository` upserts users/groups and later resolves active targets.
 5. `MarketAnalysisRepository` fetches market-analysis rows from `t_market_analyses`.
 6. `MacroReleaseCalendarRepository` reads market release reminders from `t_macro_release_calendar`.
-7. `StockQueryService` handles stock commands by reading `TradeSignalRepository` from `t_trade_signals`.
+7. `StockQueryService` handles stock commands by reusing a successful Redis-cached reply when present, otherwise calling `news-platform-api` `/api/stock-signals/generate` for a fresh response.
 8. `MarketAnalysisPoller` rejects likely mojibake summaries with `garbled_summary`, then builds text and calls `LinePushClient`.
 9. `MacroCalendarReminderService` sends one aggregated reminder for tomorrow's U.S. macro releases and watched heavyweight earnings rows.
 10. `LinePushClient` enforces the optional Redis daily cap by message type, then sends to LINE `/v2/bot/message/push` or `/v2/bot/message/multicast`.
@@ -24,7 +24,7 @@
 ## Tables
 
 - `t_market_analyses`: source rows for pushed summaries; latest rows are selected by `updated_at DESC, id DESC`, normal push selection ignores `push_enabled = 0`, likely mojibake `summary_text` values are skipped with `garbled_summary`, and successful scheduled/admin sends mark `pushed = 1`.
-- `t_trade_signals`: source rows for stock-query replies; only `pending_review`, `new`, and `watch` statuses are returned.
+- `t_trade_signals`: retained for repository/admin/debug code. Normal stock-query replies now call `news-platform-api` instead of reading this table directly.
 - `t_macro_release_calendar`: market release-calendar rows prepared by `data-collecting`; U.S. macro rows use normal indicator codes and heavyweight earnings rows use `indicator_code=earnings_<symbol>`. Java reads `reminder_date_taipei = today AND reminder_pushed = 0`, groups macro and earnings rows, and marks sent rows after at least one target receives the reminder.
 - `t_bot_user_info`: LINE users; `active = 1` marks pushable users; `test_account = 1` marks safe test recipients.
 - `t_bot_group_info`: LINE groups/rooms; only used when test-only mode is off.
