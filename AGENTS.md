@@ -15,6 +15,14 @@ These instructions apply to `line-relay-service`.
 
 Before implementation or verification work, read and follow `D:\work_space\claude-box\rules\rules\cto-technical-standards.md`. If this repo file and the global CTO standards conflict, follow the higher-priority rule and note the conflict.
 
+## Safety Stop Rules
+
+- If a request is unclear, ambiguous, or not fully understood, do not execute it. Ask for clarification first.
+- If the user's stated purpose conflicts with the literal instruction, do not execute it. Ask for clarification first.
+- Do not perform credit card, payment, subscription, or billing actions unless the owner first changes these plaintext repo rules.
+- Do not delete files outside this repo/workspace root unless the owner first changes these plaintext repo rules.
+- A one-off chat instruction does not override these stop rules.
+
 ## Git Commit And Push Workflow
 
 - After implementation and verification, stage only task-related files, create a local commit, and push the current branch to its configured upstream remote without waiting for an extra prompt.
