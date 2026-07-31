@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.zack.linerelay.db.BotTargetRepository;
 import com.zack.linerelay.market.MarketAnalysisPoller;
 import com.zack.linerelay.push.PushModeService;
-import com.zack.linerelay.stock.StockQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -29,18 +28,15 @@ public class WebhookEventProcessor {
     private final BotTargetRepository repository;
     private final MarketAnalysisPoller poller;
     private final PushModeService pushModeService;
-    private final StockQueryService stockQueryService;
 
     public WebhookEventProcessor(
             ObjectProvider<BotTargetRepository> repositoryProvider,
             ObjectProvider<MarketAnalysisPoller> pollerProvider,
-            PushModeService pushModeService,
-            ObjectProvider<StockQueryService> stockQueryServiceProvider
+            PushModeService pushModeService
     ) {
         this.repository = repositoryProvider.getIfAvailable();
         this.poller = pollerProvider.getIfAvailable();
         this.pushModeService = pushModeService;
-        this.stockQueryService = stockQueryServiceProvider.getIfAvailable();
     }
 
     /**
@@ -221,21 +217,7 @@ public class WebhookEventProcessor {
             }
             return true;
         }
-        if (stockQueryService != null && stockQueryService.handle(sourceTargetId(event), text)) {
-            log.info("line_message_command matched=stock_query");
-            return true;
-        }
         return false;
-    }
-
-    private String sourceTargetId(JsonNode event) {
-        JsonNode source = event.path("source");
-        String sourceType = source.path("type").asText("").trim().toLowerCase(Locale.ROOT);
-        return switch (sourceType) {
-            case "group" -> source.path("groupId").asText("").trim();
-            case "room" -> source.path("roomId").asText("").trim();
-            default -> source.path("userId").asText("").trim();
-        };
     }
 
     /**

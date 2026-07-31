@@ -4,7 +4,7 @@
 
 `line-relay-service` is the Java owner for LINE webhook intake and market-analysis push delivery. It keeps LINE user/group target rows current, reads prepared summaries from MySQL, and sends LINE push messages under explicit safety toggles.
 
-If Redis rate limiting is enabled, the same service also enforces a shared per-target daily push cap before any LINE HTTP call is made. Quotas are split by `PushMessageType`: `PUBLIC_ANALYSIS` currently allows 2 per target per day, while `STOCK_QUERY` allows 3.
+If Redis rate limiting is enabled, the same service also enforces a shared per-target daily push cap before any LINE HTTP call is made. Quotas are split by `PushMessageType`: `PUBLIC_ANALYSIS` currently allows 2 per target per day. `STOCK_QUERY` is retained in code, but LINE stock-query commands are currently disabled.
 
 ## Local Startup
 
@@ -43,24 +43,13 @@ Text messages are matched by prefix:
 - `測試西卡卡`: set runtime mode to push enabled and test-only.
 - `關閉西卡卡`: disable normal push delivery.
 - `西卡卡推送`: fetch the latest `t_market_analyses` row and immediately push it to active test users only.
-- `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, `西卡卡股票 <代號>`: reply to the source user/group with the newest active row from `t_trade_signals`.
-- `股價分析 <代號或名稱>`: free-form analysis query, e.g. `股價分析 Rocket Lab (RKLB)`. Must have a half-width or full-width space between the prefix and the content; the entire trimmed remainder is sent as the query and the local Redis stock-signal cache is bypassed.
+- `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, `西卡卡股票 <代號>`, and `股價分析 <代號或名稱>`: currently ignored as ordinary chat text. LINE no longer replies with stock usage text or calls `news-platform-api` for stock analysis.
 
 The command state is in memory. Restarting the service reloads initial values from `.env` / `application.yml`.
 
 ## Stock Query Flow
 
-1. `WebhookEventProcessor` detects a stock-query prefix and resolves the reply target from the LINE source (`groupId`, `roomId`, or `userId`).
-2. For ticker prefixes (`股票`, `個股`, `查股`, `西卡卡股票`), `StockQueryService` extracts the first token and normalizes symbols such as `2330.TW` to `2330`.
-3. For the free-form analysis prefix `股價分析`, `StockQueryService` keeps the entire trimmed remainder (e.g. `Rocket Lab (RKLB)`) and skips the local Redis cache; the platform model is responsible for resolving names to tickers.
-4. Ticker-mode queries check Redis key `line:stock-signal:cache:<ticker>` and reuse the previous successful reply when present.
-5. On cache miss (or always for the free-form analysis route), `PlatformStockSignalClient` calls `news-platform-api` using `LINE_PLATFORM_BASE_URL` and `LINE_PLATFORM_STOCK_SIGNAL_PATH`.
-   If `news-platform-api` write protection is enabled, configure `LINE_PLATFORM_WRITE_API_KEY` so this outbound call sends `X-News-Write-Key` (or the header named by `LINE_PLATFORM_WRITE_API_KEY_HEADER`).
-6. `news-platform-api` generates the stock signal through the configured model. Stored analyses/signals/events are context only; LINE does not read `t_trade_signals` directly for the answer.
-7. Ticker-mode successful replies are cached in Redis for `LINE_STOCK_SIGNAL_CACHE_TTL`. Free-form analysis replies are not cached locally because the cache key normalizer collapses names like `Rocket Lab (RKLB)` into the same key as `RKLB`.
-8. `LinePushClient.push(STOCK_QUERY, ...)` sends the reply and applies the `STOCK_QUERY` Redis quota.
-
-The expected reply structure (主軸) for both routes lives in `skills/line-brief-format-skill/line-stock-analysis.md`.
+Disabled: `WebhookEventProcessor` no longer routes LINE text into `StockQueryService`, so stock-like chat text is logged as a normal LINE message and `commands` remains unchanged. `StockQueryService`, `PlatformStockSignalClient`, and the stock-analysis format doc are retained only as dormant code/docs for a future explicit re-enable.
 
 ## Market Push Flow
 
@@ -104,7 +93,7 @@ line:push:rate-limit:<yyyy-MM-dd>:<PushMessageType>:<targetId>
 Current daily limits:
 
 - `PUBLIC_ANALYSIS`: `2`
-- `STOCK_QUERY`: `3`
+- `STOCK_QUERY`: `3` (retained, not used while LINE stock-query commands are disabled)
 - `MACRO_CALENDAR`: `3`
 
 ## Default Schedules

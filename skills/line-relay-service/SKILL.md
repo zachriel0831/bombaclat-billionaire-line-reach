@@ -54,14 +54,13 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
   `push_enabled = 1`.
 - `LINE_PUSH_TEST_ONLY=true` sends only to active `t_bot_user_info` rows where `test_account = 1`; groups are excluded.
 - `LINE_PUSH_RATE_LIMIT_ENABLED=true` turns on Redis-backed per-target daily caps before the LINE API call is made.
-- Redis caps are keyed by `PushMessageType`: `PUBLIC_ANALYSIS` defaults to 2/day and `STOCK_QUERY` defaults to 3/day.
+- Redis caps are keyed by `PushMessageType`: `PUBLIC_ANALYSIS` defaults to 2/day and `STOCK_QUERY` defaults to 3/day, though LINE stock-query commands are currently disabled.
 - Market-analysis pushes must pass the `garbled_summary` quality gate before target resolution. Rows whose `summary_text` is mostly `?` or Unicode replacement characters are skipped and must be repaired/regenerated first.
 - Webhook commands are runtime-only and reset on restart:
   - `測試西卡卡` enables push and forces test-only mode.
   - `關閉西卡卡` disables normal pushes.
   - `西卡卡推送` immediately pushes the latest `t_market_analyses` row to active test users only, bypassing the normal push toggle and not marking anything as pushed.
-  - `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, and `西卡卡股票 <代號>` first reuse a successful Redis-cached reply when present, otherwise call `news-platform-api` `/api/stock-signals/generate` for a fresh response. This path still uses the `STOCK_QUERY` Redis quota.
-  - `股價分析 <代號或名稱>` (half-width or full-width space required between prefix and content) sends the entire trimmed remainder as a free-form query (e.g. `股價分析 Rocket Lab (RKLB)`) to `news-platform-api` `/api/stock-signals/generate`. The local Redis cache is bypassed for this route because the cache key normalizer would collapse "Rocket Lab (RKLB)" and "RKLB" together. The reply uses the same `STOCK_QUERY` Redis quota and renders with the stock-analysis template under `skills/line-brief-format-skill/line-stock-analysis.md`.
+  - `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, `西卡卡股票 <代號>`, and `股價分析 <代號或名稱>` are currently ignored as ordinary chat text. LINE no longer replies with stock usage text or starts stock analysis from chat commands.
 - Schedule-specific rules:
   - TW open + relevant U.S. close session open: weekdays push `pre_tw_open`; Saturdays push `us_close` after the Codex/data-collecting guard has had time to write the row.
   - TW closed + relevant U.S. close session open: push `us_close`.

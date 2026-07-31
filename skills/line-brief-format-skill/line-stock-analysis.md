@@ -1,6 +1,6 @@
 # LINE Stock Analysis Template
 
-LINE relay 在收到 `股價分析 <代號或名稱>` 指令時,把整段 trimmed query 丟給中台 `news-platform-api` `/api/stock-signals/generate`。中台模型必須回傳一段適合直接貼入 LINE 對話窗的 `lineMessage`。本檔是**輸出主軸**(分析骨架)的合約;若中台未提供 `lineMessage`,LINE relay 會用同樣的順序把 `GeneratedStockSignalResponse` 各欄位組成 fallback 回覆。
+LINE relay 的 `股價分析 <代號或名稱>` 指令目前已從 webhook command routing 停用。本檔保留為未來明確重啟時的輸出主軸合約: 若重新啟用, relay 會把整段 trimmed query 丟給中台 `news-platform-api` `/api/stock-signals/generate`, 中台模型需回傳適合直接貼入 LINE 對話窗的 `lineMessage`; 若中台未提供 `lineMessage`, LINE relay 會用同樣的順序把 `GeneratedStockSignalResponse` 各欄位組成 fallback 回覆。
 
 ## Trigger contract
 

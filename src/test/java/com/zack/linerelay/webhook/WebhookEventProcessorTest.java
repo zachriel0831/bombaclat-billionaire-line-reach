@@ -6,7 +6,6 @@ import com.zack.linerelay.config.LineProperties;
 import com.zack.linerelay.db.BotTargetRepository;
 import com.zack.linerelay.market.MarketAnalysisPoller;
 import com.zack.linerelay.push.PushModeService;
-import com.zack.linerelay.stock.StockQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,7 +33,6 @@ class WebhookEventProcessorTest {
     private BotTargetRepository repo;
     private MarketAnalysisPoller poller;
     private PushModeService pushModeService;
-    private StockQueryService stockQueryService;
     private WebhookEventProcessor processor;
 
     @BeforeEach
@@ -42,11 +40,10 @@ class WebhookEventProcessorTest {
         mapper = new ObjectMapper();
         repo = Mockito.mock(BotTargetRepository.class);
         poller = Mockito.mock(MarketAnalysisPoller.class);
-        stockQueryService = Mockito.mock(StockQueryService.class);
         pushModeService = new PushModeService(new LineProperties(
                 "s", "t", null, new LineProperties.Push(true, false), null));
         processor = new WebhookEventProcessor(
-                providerOf(repo), providerOf(poller), pushModeService, providerOf(stockQueryService));
+                providerOf(repo), providerOf(poller), pushModeService);
     }
 
     private <T> ObjectProvider<T> providerOf(T instance) {
@@ -186,7 +183,7 @@ class WebhookEventProcessorTest {
     @Test
     void worksWithoutRepositoryWhenMysqlDisabled() throws Exception {
         WebhookEventProcessor noRepoProcessor = new WebhookEventProcessor(
-                providerOf(null), providerOf(poller), pushModeService, providerOf(stockQueryService));
+                providerOf(null), providerOf(poller), pushModeService);
 
         JsonNode events = parseEvents("""
                 {"events":[{"type":"follow","source":{"type":"user","userId":"U_A"}}]}
@@ -205,7 +202,7 @@ class WebhookEventProcessorTest {
         PushModeService modes = new PushModeService(new LineProperties(
                 "s", "t", null, new LineProperties.Push(false, false), null));
         WebhookEventProcessor commandProcessor = new WebhookEventProcessor(
-                providerOf(repo), providerOf(poller), modes, providerOf(stockQueryService));
+                providerOf(repo), providerOf(poller), modes);
         JsonNode events = parseEvents("""
                 {"events":[{"type":"message","source":{"type":"user","userId":"U_A"},
                             "message":{"type":"text","text":"測試西卡卡 現在切測試"}}]}
@@ -246,8 +243,7 @@ class WebhookEventProcessorTest {
     }
 
     @Test
-    void stockCommandUsesGroupAsReplyTargetWhenMessageComesFromGroup() throws Exception {
-        when(stockQueryService.handle(eq(GROUP_A), eq("股票 2330"))).thenReturn(true);
+    void stockCommandTextNoLongerTriggersLineCommand() throws Exception {
         JsonNode events = parseEvents("""
                 {"events":[{"type":"message","source":{"type":"group","groupId":"G_A","userId":"U_A"},
                             "message":{"type":"text","text":"股票 2330"}}]}
@@ -255,7 +251,6 @@ class WebhookEventProcessorTest {
 
         WebhookEventProcessor.Summary summary = processor.process(events);
 
-        assertEquals(1, summary.commands());
-        verify(stockQueryService).handle(eq(GROUP_A), eq("股票 2330"));
+        assertEquals(0, summary.commands());
     }
 }

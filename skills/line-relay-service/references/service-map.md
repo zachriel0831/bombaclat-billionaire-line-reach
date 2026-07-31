@@ -16,7 +16,7 @@
 4. `BotTargetRepository` upserts users/groups and later resolves active targets.
 5. `MarketAnalysisRepository` fetches market-analysis rows from `t_market_analyses`.
 6. `MacroReleaseCalendarRepository` reads market release reminders from `t_macro_release_calendar`.
-7. `StockQueryService` handles stock commands by reusing a successful Redis-cached reply when present, otherwise calling `news-platform-api` `/api/stock-signals/generate` for a fresh response.
+7. LINE stock-query commands are currently disabled in `WebhookEventProcessor`; stock-like chat text is logged as a normal message and does not call `news-platform-api`.
 8. `MarketAnalysisPoller` rejects likely mojibake summaries with `garbled_summary`, then builds text and calls `LinePushClient`.
 9. `MacroCalendarReminderService` sends one aggregated reminder for tomorrow's U.S. macro releases and watched heavyweight earnings rows.
 10. `LinePushClient` enforces the optional Redis daily cap by message type, then sends to LINE `/v2/bot/message/push` or `/v2/bot/message/multicast`.
@@ -29,7 +29,7 @@
 - `t_bot_user_info`: LINE users; `active = 1` marks pushable users; `test_account = 1` marks safe test recipients.
 - `t_bot_group_info`: LINE groups/rooms; only used when test-only mode is off.
 - Redis keys: `line:push:rate-limit:<YYYY-MM-DD>:<PushMessageType>:<targetId>` by default when global push caps are enabled.
-- Redis daily caps: `PUBLIC_ANALYSIS = 2`, `STOCK_QUERY = 3`, `MACRO_CALENDAR = 3`.
+- Redis daily caps: `PUBLIC_ANALYSIS = 2`, `STOCK_QUERY = 3`, `MACRO_CALENDAR = 3`. `STOCK_QUERY` is retained but unused while LINE stock-query commands are disabled.
 
 ## Known Local Pitfall
 

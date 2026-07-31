@@ -6,7 +6,7 @@ Spring Boot 3 / Java 21 service that owns LINE webhook intake, LINE target state
 
 - Receives LINE webhook events at `POST /webhook`, verifies signatures, and records active user/group targets when MySQL is enabled.
 - Pushes scheduled and manual market-analysis messages from `t_market_analyses`.
-- Handles stock-query commands by calling `news-platform-api` for fresh stock-signal generation, with Redis cache and quota guards.
+- LINE stock-query commands are currently disabled; the service no longer starts stock analysis from chat text.
 - Enforces delivery toggles, test-only routing, Redis rate limits, and market-calendar scheduling.
 - Does not collect news, generate scheduled analyses, serve the public website, monitor market ticks, or place broker orders.
 
@@ -169,12 +169,9 @@ LINE webhook receiver.
   - `測試西卡卡` → enable push and force test-only targets.
   - `關閉西卡卡` → disable push.
   - `西卡卡推送` → immediately push the latest `t_market_analyses` row to active test users only, without marking it as pushed.
-  - `股票 2330`, `個股 2330`, `查股 NVDA`, or `西卡卡股票 2330` → reply to the source user/group with a Redis-cached reply when available, otherwise call `news-platform-api` `/api/stock-signals/generate` for a fresh response. This path uses the `STOCK_QUERY` Redis quota.
-  - `股價分析 <代號或名稱>` (例如 `股價分析 Rocket Lab (RKLB)`、`股價分析 2330`) → 必須在前綴與內容之間有半形或全形空白才會匹配。後段整段 trim 後直接丟給 `news-platform-api`,跳過本地 Redis cache(避免名稱被 ticker key 正規化壓縮)。仍受 `STOCK_QUERY` 配額限制。
+  - `股票 2330`, `個股 2330`, `查股 NVDA`, `西卡卡股票 2330`, and `股價分析 <代號或名稱>` are currently ignored as ordinary chat text. LINE no longer replies with stock usage text or calls `news-platform-api` for stock analysis.
 - Response body includes `events`, `users`, and `groups` counts for observability.
-- Current stock-query behavior:
-  - `股票 2330`, `個股 2330`, `查股 NVDA`, and `西卡卡股票 2330` first reuse a successful Redis-cached reply when present, otherwise call `news-platform-api` `/api/stock-signals/generate` for a fresh model response and cache that successful reply. They no longer read `t_trade_signals` directly.
-  - `股價分析 <代號或名稱>` always calls `news-platform-api` (cache bypassed) so names like `Rocket Lab (RKLB)` can reach the platform without being normalized into a different ticker key.
+- Current stock-query behavior: disabled from LINE webhook command routing. The old command handler remains in code only for tests or a future explicit re-enable.
 - With MySQL disabled, events are logged only; no rows are written.
 
 ### Admin endpoints (registered only when `LINE_RELAY_MYSQL_ENABLED=true`)
