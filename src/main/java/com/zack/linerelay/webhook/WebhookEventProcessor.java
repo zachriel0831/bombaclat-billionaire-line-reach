@@ -120,7 +120,7 @@ public class WebhookEventProcessor {
             groupStates.putIfAbsent(groupOrRoomId, true);
         }
 
-        StringBuilder joinedUserLog = new StringBuilder();
+        int joinedUserCount = 0;
         if ("memberjoined".equals(eventType)) {
             JsonNode members = event.path("joined").path("members");
             if (members.isArray()) {
@@ -128,8 +128,7 @@ public class WebhookEventProcessor {
                     String joinedUserId = member.path("userId").asText("").trim();
                     if (joinedUserId.isEmpty()) continue;
                     userStates.put(joinedUserId, true);
-                    if (joinedUserLog.length() > 0) joinedUserLog.append(',');
-                    joinedUserLog.append(joinedUserId);
+                    joinedUserCount++;
                 }
             }
         }
@@ -139,44 +138,42 @@ public class WebhookEventProcessor {
                 if (!groupOrRoomId.isEmpty()) {
                     groupStates.put(groupOrRoomId, true);
                 }
-                log.info("[LINE_GROUP_JOIN] event_type={} source_type={} group_id={} user_id={} joined_user_ids={}",
-                        dash(eventType), dash(sourceType), dash(groupOrRoomId),
-                        dash(userId), joinedUserLog.length() == 0 ? "-" : joinedUserLog.toString());
+                log.info("[LINE_GROUP_JOIN] event_type={} source_type={} group_present={} user_present={} joined_user_count={}",
+                        dash(eventType), dash(sourceType), present(groupOrRoomId),
+                        present(userId), joinedUserCount);
             }
             case "leave" -> {
                 if (!groupOrRoomId.isEmpty()) {
                     groupStates.put(groupOrRoomId, false);
                 }
-                log.info("[LINE_GROUP_LEAVE] source_type={} group_id={} user_id={}",
-                        dash(sourceType), dash(groupOrRoomId), dash(userId));
+                log.info("[LINE_GROUP_LEAVE] source_type={} group_present={} user_present={}",
+                        dash(sourceType), present(groupOrRoomId), present(userId));
             }
             case "unfollow" -> {
                 if (!userId.isEmpty()) {
                     userStates.put(userId, false);
                 }
-                log.info("[LINE_USER_UNFOLLOW] user_id={}", dash(userId));
+                log.info("[LINE_USER_UNFOLLOW] user_present={}", present(userId));
             }
             case "follow" -> {
                 if (!userId.isEmpty()) {
                     userStates.put(userId, true);
                 }
-                log.info("[LINE_USER_FOLLOW] user_id={}", dash(userId));
+                log.info("[LINE_USER_FOLLOW] user_present={}", present(userId));
             }
             case "message" -> {
                 String msgType = event.path("message").path("type").asText("");
                 String text = event.path("message").path("text").asText("");
                 String messageId = event.path("message").path("id").asText("");
-                // This log is intentionally full-text to make local LINE command
-                // testing observable in the cmd window.
-                log.info("line_message_received source_type={} source_id={} user_id={} message_id={} msg_type={} text={}",
-                        dash(sourceType), dash(userId.isEmpty() ? groupOrRoomId : userId),
-                        dash(userId), dash(messageId), dash(msgType), dash(text));
+                log.info("line_message_received source_type={} source_present={} user_present={} message_present={} msg_type={} text_chars={}",
+                        dash(sourceType), present(userId.isEmpty() ? groupOrRoomId : userId),
+                        present(userId), present(messageId), dash(msgType), text.length());
             }
-            case "memberleft" -> log.info("event=memberLeft {}={} members={}",
-                    dash(sourceType), dash(groupOrRoomId), event.path("left").path("members"));
-            default -> log.info("event={} source={}:{} user_id={}",
-                    dash(eventType), dash(sourceType), dash(groupOrRoomId.isEmpty() ? userId : groupOrRoomId),
-                    dash(userId));
+            case "memberleft" -> log.info("event=memberLeft source_type={} source_present={} left_member_count={}",
+                    dash(sourceType), present(groupOrRoomId), memberCount(event.path("left").path("members")));
+            default -> log.info("event={} source_type={} source_present={} user_present={}",
+                    dash(eventType), dash(sourceType), present(groupOrRoomId.isEmpty() ? userId : groupOrRoomId),
+                    present(userId));
         }
     }
 
@@ -225,6 +222,14 @@ public class WebhookEventProcessor {
      */
     private static String dash(String v) {
         return v == null || v.isEmpty() ? "-" : v;
+    }
+
+    private static boolean present(String v) {
+        return v != null && !v.isEmpty();
+    }
+
+    private static int memberCount(JsonNode members) {
+        return members != null && members.isArray() ? members.size() : 0;
     }
 
     /**
