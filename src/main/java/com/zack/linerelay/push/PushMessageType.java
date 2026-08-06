@@ -6,6 +6,5 @@ package com.zack.linerelay.push;
  */
 public enum PushMessageType {
     PUBLIC_ANALYSIS,
-    STOCK_QUERY,
     MACRO_CALENDAR
 }

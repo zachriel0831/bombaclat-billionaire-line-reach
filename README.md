@@ -6,7 +6,7 @@ Spring Boot 3 / Java 21 service that owns LINE webhook intake, LINE target state
 
 - Receives LINE webhook events at `POST /webhook`, verifies signatures, and records active user/group targets when MySQL is enabled.
 - Pushes scheduled and manual market-analysis messages from `t_market_analyses`.
-- LINE stock-query commands are currently disabled; the service no longer starts stock analysis from chat text.
+- LINE stock-query commands were removed; chat text no longer starts stock analysis.
 - Enforces delivery toggles, test-only routing, Redis rate limits, and market-calendar scheduling.
 - Does not collect news, generate scheduled analyses, serve the public website, monitor market ticks, or place broker orders.
 
@@ -25,8 +25,8 @@ Spring Boot 3 / Java 21 service that owns LINE webhook intake, LINE target state
 
 | Service | Relationship |
 |---|---|
-| `data-collecting` | Produces relay events, market analyses, weekly summaries, and trade-signal rows. |
-| `news-platform-api` | Serves the API used by LINE stock-query commands and the public frontend. |
+| `data-collecting` | Produces relay events, market analyses, and weekly summaries. |
+| `news-platform-api` | Serves the public frontend API. |
 | `news-display-frontend` | Public web UI linked from LINE analysis pushes. |
 | `stock-monitor-service` | Produces quote snapshots, candles, watchlist trigger events, and live market context. |
 | `order-dispatcher-service` | Future brokerage-order leg; LINE delivery stays here. |
@@ -53,11 +53,6 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_CHANNEL_ACCESS_TOKEN` | yes | LINE Messaging API bearer token for outbound pushes |
 | `LINE_API_BASE` | no | Defaults to `https://api.line.me` |
 | `LINE_PUBLIC_ANALYSIS_BASE_URL` | no | Public frontend analyses list URL, e.g. `https://example.ngrok-free.app/analyses`; when set, LINE market-analysis pushes include a short excerpt and `/analyses/{id}` link. |
-| `LINE_PLATFORM_ENABLED` | no | Enables real-time stock-query calls to `news-platform-api`. Default `true`. |
-| `LINE_PLATFORM_BASE_URL` | no | Middle-office API base URL. Default `http://localhost:8081`. |
-| `LINE_PLATFORM_STOCK_SIGNAL_PATH` | no | Real-time stock signal generation path. Default `/api/stock-signals/generate`. |
-| `LINE_PLATFORM_WRITE_API_KEY_HEADER` | no | Header used when calling protected write endpoints on `news-platform-api`. Default `X-News-Write-Key`. |
-| `LINE_PLATFORM_WRITE_API_KEY` | when platform write security on | API key sent to `news-platform-api` for stock-signal generation. |
 | `LINE_SECURITY_ENABLED` | no | Enables inbound admin/webhook protection. Default `true`. |
 | `LINE_ADMIN_API_KEY_HEADER` | no | Header required for `/admin/*`. Default `X-Line-Admin-Key`. |
 | `LINE_ADMIN_API_KEYS` | when admin endpoints are exposed | Comma-separated admin keys. Empty keys fail closed with HTTP 503. |
@@ -68,13 +63,9 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_PUSH_TEST_ONLY` | no | Target safety toggle. Default `true` — only push active `t_bot_user_info` rows where `test_account = 1`. Set `false` to include all active groups and users. |
 | `LINE_PUSH_RATE_LIMIT_ENABLED` | no | Enables Redis-backed per-target daily caps. |
 | `LINE_PUSH_PUBLIC_ANALYSIS_DAILY_MAX_PER_TARGET` | no | Daily cap for public analysis pushes. Default `2`. |
-| `LINE_PUSH_STOCK_QUERY_DAILY_MAX_PER_TARGET` | no | Daily cap for stock-query replies. Default `3`. |
 | `LINE_PUSH_MACRO_CALENDAR_DAILY_MAX_PER_TARGET` | no | Daily cap for macro-calendar reminder pushes. Default `3`. |
 | `LINE_PUSH_RATE_LIMIT_ZONE` | no | Business-date timezone for Redis counters. Default `Asia/Taipei`. |
 | `LINE_PUSH_RATE_LIMIT_KEY_PREFIX` | no | Redis key prefix. Default `line:push:rate-limit`. |
-| `LINE_STOCK_SIGNAL_CACHE_ENABLED` | no | Enables Redis cache for successful stock-query replies. Default `true`. |
-| `LINE_STOCK_SIGNAL_CACHE_KEY_PREFIX` | no | Redis key prefix for cached stock-query replies. Default `line:stock-signal:cache`. |
-| `LINE_STOCK_SIGNAL_CACHE_TTL` | no | Cache TTL for successful stock-query replies. Default `6h`. |
 | `SPRING_DATA_REDIS_HOST` / `_PORT` / `_TIMEOUT` | when rate limit on | Redis connection settings. |
 | `LINE_RELAY_MYSQL_ENABLED` | no | Gate for MySQL-backed features (poller, repositories, `/admin/*`). Default `false`. |
 | `LINE_RELAY_MYSQL_URL` | when MySQL on | JDBC URL, e.g. `jdbc:mysql://host:3306/news_relay?useSSL=false&serverTimezone=UTC` |
@@ -82,7 +73,6 @@ Set these environment variables (or put them in a `.env` loaded by your process 
 | `LINE_RELAY_MYSQL_ANALYSIS_TABLE` | no | Defaults to `t_market_analyses` |
 | `LINE_RELAY_MYSQL_GROUP_TABLE` | no | Defaults to `t_bot_group_info` |
 | `LINE_RELAY_MYSQL_USER_TABLE` | no | Defaults to `t_bot_user_info` |
-| `LINE_RELAY_MYSQL_TRADE_SIGNAL_TABLE` | no | Defaults to `t_trade_signals`; retained for repository/admin/debug code. LINE stock-query replies call `news-platform-api` instead of reading this table directly. |
 | `LINE_RELAY_MYSQL_MACRO_CALENDAR_TABLE` | no | Defaults to `t_macro_release_calendar`; read for market release-calendar reminders prepared by `data-collecting`, including U.S. macro rows and `earnings_<symbol>` heavyweight earnings rows. |
 | `LINE_SCHEDULE_TW_MARKET_HOLIDAYS` | no | Comma-separated `YYYY-MM-DD` TW market holidays used by the public-analysis routing matrix. |
 | `LINE_SCHEDULE_US_MARKET_HOLIDAYS` | no | Comma-separated `YYYY-MM-DD` U.S. market holidays. The checked U.S. date is Taiwan local date minus one day. |
@@ -169,9 +159,9 @@ LINE webhook receiver.
   - `測試西卡卡` → enable push and force test-only targets.
   - `關閉西卡卡` → disable push.
   - `西卡卡推送` → immediately push the latest `t_market_analyses` row to active test users only, without marking it as pushed.
-  - `股票 2330`, `個股 2330`, `查股 NVDA`, `西卡卡股票 2330`, and `股價分析 <代號或名稱>` are currently ignored as ordinary chat text. LINE no longer replies with stock usage text or calls `news-platform-api` for stock analysis.
+  - Stock-query phrases such as `股票 2330`, `查股 NVDA`, and `股價分析 Rocket Lab (RKLB)` are ordinary chat text; there is no stock-analysis command handler.
 - Response body includes `events`, `users`, and `groups` counts for observability.
-- Current stock-query behavior: disabled from LINE webhook command routing. The old command handler remains in code only for tests or a future explicit re-enable.
+- Current stock-query behavior: removed from LINE webhook command routing and service code.
 - With MySQL disabled, events are logged only; no rows are written.
 
 ### Admin endpoints (registered only when `LINE_RELAY_MYSQL_ENABLED=true`)

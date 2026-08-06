@@ -28,8 +28,7 @@ class MarketAnalysisRepositoryTest {
         LineProperties props = new LineProperties(
                 "s", "t", null,
                 new LineProperties.Push(false, true),
-                new LineProperties.Mysql(true, "t_market_analyses", "t_bot_group_info", "t_bot_user_info",
-                        "t_trade_signals"));
+                new LineProperties.Mysql(true, "t_market_analyses", "t_bot_group_info", "t_bot_user_info"));
         return new MarketAnalysisRepository(jdbc, props);
     }
 

@@ -31,12 +31,6 @@ line:
   channel-secret: ${LINE_CHANNEL_SECRET:}
   channel-access-token: ${LINE_CHANNEL_ACCESS_TOKEN:}
   api-base: ${LINE_API_BASE:https://api.line.me}
-  platform:
-    enabled: ${LINE_PLATFORM_ENABLED:true}
-    base-url: ${LINE_PLATFORM_BASE_URL:http://localhost:8081}
-    stock-signal-path: ${LINE_PLATFORM_STOCK_SIGNAL_PATH:/api/stock-signals/generate}
-    write-api-key-header: ${LINE_PLATFORM_WRITE_API_KEY_HEADER:X-News-Write-Key}
-    write-api-key: ${LINE_PLATFORM_WRITE_API_KEY:}
   security:
     enabled: ${LINE_SECURITY_ENABLED:true}
     admin-api-key-header: ${LINE_ADMIN_API_KEY_HEADER:X-Line-Admin-Key}
@@ -55,21 +49,15 @@ line:
     rate-limit:
       enabled: ${LINE_PUSH_RATE_LIMIT_ENABLED:false}
       public-analysis-daily-max-per-target: ${LINE_PUSH_PUBLIC_ANALYSIS_DAILY_MAX_PER_TARGET:2}
-      stock-query-daily-max-per-target: ${LINE_PUSH_STOCK_QUERY_DAILY_MAX_PER_TARGET:3}
       macro-calendar-daily-max-per-target: ${LINE_PUSH_MACRO_CALENDAR_DAILY_MAX_PER_TARGET:3}
       zone: ${LINE_PUSH_RATE_LIMIT_ZONE:${LINE_SCHEDULE_ZONE:Asia/Taipei}}
       key-prefix: ${LINE_PUSH_RATE_LIMIT_KEY_PREFIX:line:push:rate-limit}
-  stock-signal-cache:
-    enabled: ${LINE_STOCK_SIGNAL_CACHE_ENABLED:true}
-    key-prefix: ${LINE_STOCK_SIGNAL_CACHE_KEY_PREFIX:line:stock-signal:cache}
-    ttl: ${LINE_STOCK_SIGNAL_CACHE_TTL:6h}
   mysql:
     # Gates repository, poller, scheduler, and admin DB endpoints.
     enabled: ${LINE_RELAY_MYSQL_ENABLED:false}
     analysis-table: ${LINE_RELAY_MYSQL_ANALYSIS_TABLE:t_market_analyses}
     group-table: ${LINE_RELAY_MYSQL_GROUP_TABLE:t_bot_group_info}
     user-table: ${LINE_RELAY_MYSQL_USER_TABLE:t_bot_user_info}
-    trade-signal-table: ${LINE_RELAY_MYSQL_TRADE_SIGNAL_TABLE:t_trade_signals}
     macro-calendar-table: ${LINE_RELAY_MYSQL_MACRO_CALENDAR_TABLE:t_macro_release_calendar}
   schedule:
     # Cron expressions are evaluated in this zone, not the machine default.

@@ -10,7 +10,6 @@ line:
     rate-limit:
       enabled: false
       public-analysis-daily-max-per-target: 2
-      stock-query-daily-max-per-target: 3
       zone: Asia/Taipei
       key-prefix: line:test:push:rate-limit
   mysql:

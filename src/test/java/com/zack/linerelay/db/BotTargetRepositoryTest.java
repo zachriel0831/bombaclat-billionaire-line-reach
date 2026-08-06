@@ -49,8 +49,7 @@ class BotTargetRepositoryTest {
         LineProperties props = new LineProperties(
                 "s", "t", null,
                 new LineProperties.Push(false, pushTestOnly),
-                new LineProperties.Mysql(true, "t_market_analyses", "t_bot_group_info", "t_bot_user_info",
-                        "t_trade_signals"));
+                new LineProperties.Mysql(true, "t_market_analyses", "t_bot_group_info", "t_bot_user_info"));
         return new BotTargetRepository(jdbc, props, new PushModeService(props));
     }
 

@@ -2,7 +2,6 @@ package com.zack.linerelay.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -24,15 +23,4 @@ public class RestClientConfig {
                 .build();
     }
 
-    @Bean
-    @Qualifier("platformRestClient")
-    public RestClient platformRestClient(LineProperties props) {
-        RestClient.Builder builder = RestClient.builder()
-                .baseUrl(props.platform().baseUrl())
-                .defaultHeader("Content-Type", "application/json");
-        if (!props.platform().writeApiKey().isBlank()) {
-            builder.defaultHeader(props.platform().writeApiKeyHeader(), props.platform().writeApiKey());
-        }
-        return builder.build();
-    }
 }

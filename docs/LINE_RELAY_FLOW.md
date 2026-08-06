@@ -4,7 +4,7 @@
 
 `line-relay-service` is the Java owner for LINE webhook intake and market-analysis push delivery. It keeps LINE user/group target rows current, reads prepared summaries from MySQL, and sends LINE push messages under explicit safety toggles.
 
-If Redis rate limiting is enabled, the same service also enforces a shared per-target daily push cap before any LINE HTTP call is made. Quotas are split by `PushMessageType`: `PUBLIC_ANALYSIS` currently allows 2 per target per day. `STOCK_QUERY` is retained in code, but LINE stock-query commands are currently disabled.
+If Redis rate limiting is enabled, the same service also enforces a shared per-target daily push cap before any LINE HTTP call is made. Quotas are split by `PushMessageType`: `PUBLIC_ANALYSIS` currently allows 2 per target per day and `MACRO_CALENDAR` allows 3.
 
 ## Local Startup
 
@@ -43,13 +43,13 @@ Text messages are matched by prefix:
 - `測試西卡卡`: set runtime mode to push enabled and test-only.
 - `關閉西卡卡`: disable normal push delivery.
 - `西卡卡推送`: fetch the latest `t_market_analyses` row and immediately push it to active test users only.
-- `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, `西卡卡股票 <代號>`, and `股價分析 <代號或名稱>`: currently ignored as ordinary chat text. LINE no longer replies with stock usage text or calls `news-platform-api` for stock analysis.
+- Stock-query phrases such as `股票 2330`, `查股 NVDA`, and `股價分析 Rocket Lab (RKLB)` are ordinary chat text; there is no stock-analysis command handler.
 
 The command state is in memory. Restarting the service reloads initial values from `.env` / `application.yml`.
 
 ## Stock Query Flow
 
-Disabled: `WebhookEventProcessor` no longer routes LINE text into `StockQueryService`, so stock-like chat text is logged as a normal LINE message and `commands` remains unchanged. `StockQueryService`, `PlatformStockSignalClient`, and the stock-analysis format doc are retained only as dormant code/docs for a future explicit re-enable.
+Removed. `WebhookEventProcessor` logs stock-like chat text as a normal LINE message; there is no stock-query command handler, platform stock-signal client, stock-signal cache, or `STOCK_QUERY` quota.
 
 ## Market Push Flow
 
@@ -93,7 +93,6 @@ line:push:rate-limit:<yyyy-MM-dd>:<PushMessageType>:<targetId>
 Current daily limits:
 
 - `PUBLIC_ANALYSIS`: `2`
-- `STOCK_QUERY`: `3` (retained, not used while LINE stock-query commands are disabled)
 - `MACRO_CALENDAR`: `3`
 
 ## Default Schedules

@@ -54,13 +54,13 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
   `push_enabled = 1`.
 - `LINE_PUSH_TEST_ONLY=true` sends only to active `t_bot_user_info` rows where `test_account = 1`; groups are excluded.
 - `LINE_PUSH_RATE_LIMIT_ENABLED=true` turns on Redis-backed per-target daily caps before the LINE API call is made.
-- Redis caps are keyed by `PushMessageType`: `PUBLIC_ANALYSIS` defaults to 2/day and `STOCK_QUERY` defaults to 3/day, though LINE stock-query commands are currently disabled.
+- Redis caps are keyed by `PushMessageType`: `PUBLIC_ANALYSIS` defaults to 2/day and `MACRO_CALENDAR` defaults to 3/day.
 - Market-analysis pushes must pass the `garbled_summary` quality gate before target resolution. Rows whose `summary_text` is mostly `?` or Unicode replacement characters are skipped and must be repaired/regenerated first.
 - Webhook commands are runtime-only and reset on restart:
   - `測試西卡卡` enables push and forces test-only mode.
   - `關閉西卡卡` disables normal pushes.
   - `西卡卡推送` immediately pushes the latest `t_market_analyses` row to active test users only, bypassing the normal push toggle and not marking anything as pushed.
-  - `股票 <代號>`, `個股 <代號>`, `查股 <代號>`, `西卡卡股票 <代號>`, and `股價分析 <代號或名稱>` are currently ignored as ordinary chat text. LINE no longer replies with stock usage text or starts stock analysis from chat commands.
+  - Stock-query phrases such as `股票 2330`, `查股 NVDA`, and `股價分析 Rocket Lab (RKLB)` are ordinary chat text; there is no stock-analysis command handler.
 - Schedule-specific rules:
   - TW open + relevant U.S. close session open: weekdays push `pre_tw_open`; Saturdays push `us_close` after the Codex/data-collecting guard has had time to write the row.
   - TW closed + relevant U.S. close session open: push `us_close`.
@@ -70,7 +70,7 @@ Do NOT try to inline the JDK env + `mvnw spring-boot:run` directly through `Star
   - The 00:00 Taipei cleanup disables old unpushed rows with `pushed = 0` by setting `push_enabled = 0`.
   - Normal scheduled/admin pushes mark `pushed = 1` after at least one successful delivery.
 - Redis-specific rule:
-  - The global push cap is keyed by LINE target ID, Taipei date, and `PushMessageType`, so public analysis and stock-query replies do not consume each other's quota.
+  - The global push cap is keyed by LINE target ID, Taipei date, and `PushMessageType`, so public analysis and macro-calendar reminders do not consume each other's quota.
 - LINE Console local testing should use `ngrok http 8080` and webhook URL `https://<ngrok>/webhook`.
 - `/admin/*` needs `X-Line-Admin-Key`; if local `.env` has no admin key, use a
   temporary process env key for manual ops rather than printing or committing it.

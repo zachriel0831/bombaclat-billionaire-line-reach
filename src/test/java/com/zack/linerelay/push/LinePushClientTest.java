@@ -236,23 +236,6 @@ class LinePushClientTest {
     }
 
     @Test
-    void stockQueryPushUsesSeparateRateLimitType() throws Exception {
-        PushRateLimiter limiter = mock(PushRateLimiter.class);
-        PushRateLimiter.Lease lease = PushRateLimiter.Lease.allowed(
-                PushMessageType.STOCK_QUERY, "U123", "stock-key", "2026-04-27", 3, 3);
-        org.mockito.Mockito.when(limiter.acquire(PushMessageType.STOCK_QUERY, "U123")).thenReturn(lease);
-        server.expect(requestTo("https://api.line.me/v2/bot/message/push"))
-                .andRespond(withSuccess());
-
-        LinePushClient.PushAttempt result = enabledClient(limiter)
-                .push(PushMessageType.STOCK_QUERY, "U123", "stock reply");
-
-        assertEquals(true, result.delivered());
-        verify(limiter).acquire(PushMessageType.STOCK_QUERY, "U123");
-        server.verify();
-    }
-
-    @Test
     void isPushEnabledReflectsConfig() {
         assertEquals(true, enabledClient().isPushEnabled());
         assertEquals(false, disabledClient().isPushEnabled());

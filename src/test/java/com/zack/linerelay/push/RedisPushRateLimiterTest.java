@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class RedisPushRateLimiterTest {
 
     private PushRateLimitProperties props() {
-        return new PushRateLimitProperties(true, 2, 2, 3, 3, "Asia/Taipei", "line:test:push:rate-limit");
+        return new PushRateLimitProperties(true, 2, 2, 3, "Asia/Taipei", "line:test:push:rate-limit");
     }
 
     private Clock fixedClock() {
@@ -63,23 +63,6 @@ class RedisPushRateLimiterTest {
         assertFalse(lease.allowed());
         assertEquals(2L, lease.usedCount());
         verify(ops).decrement("line:test:push:rate-limit:2026-04-27:PUBLIC_ANALYSIS:U1");
-    }
-
-    @Test
-    void acquireAllowsThirdStockQueryWithSeparateLimitAndKey() {
-        StringRedisTemplate redis = mock(StringRedisTemplate.class);
-        @SuppressWarnings("unchecked")
-        ValueOperations<String, String> ops = mock(ValueOperations.class);
-        when(redis.opsForValue()).thenReturn(ops);
-        when(ops.increment("line:test:push:rate-limit:2026-04-27:STOCK_QUERY:U1")).thenReturn(3L);
-
-        RedisPushRateLimiter limiter = new RedisPushRateLimiter(redis, props(), fixedClock());
-        PushRateLimiter.Lease lease = limiter.acquire(PushMessageType.STOCK_QUERY, "U1");
-
-        assertTrue(lease.allowed());
-        assertEquals(PushMessageType.STOCK_QUERY, lease.type());
-        assertEquals(3L, lease.usedCount());
-        assertEquals(3, lease.dailyLimit());
     }
 
     @Test

@@ -11,7 +11,6 @@ public record PushRateLimitProperties(
         boolean enabled,
         int dailyMaxPerTarget,
         int publicAnalysisDailyMaxPerTarget,
-        int stockQueryDailyMaxPerTarget,
         int macroCalendarDailyMaxPerTarget,
         String zone,
         String keyPrefix
@@ -22,9 +21,6 @@ public record PushRateLimitProperties(
         }
         if (publicAnalysisDailyMaxPerTarget <= 0) {
             publicAnalysisDailyMaxPerTarget = dailyMaxPerTarget;
-        }
-        if (stockQueryDailyMaxPerTarget <= 0) {
-            stockQueryDailyMaxPerTarget = 3;
         }
         if (macroCalendarDailyMaxPerTarget <= 0) {
             macroCalendarDailyMaxPerTarget = 3;
@@ -39,7 +35,6 @@ public record PushRateLimitProperties(
 
     public int dailyLimitFor(PushMessageType type) {
         return switch (type) {
-            case STOCK_QUERY -> stockQueryDailyMaxPerTarget;
             case MACRO_CALENDAR -> macroCalendarDailyMaxPerTarget;
             case PUBLIC_ANALYSIS -> publicAnalysisDailyMaxPerTarget;
         };

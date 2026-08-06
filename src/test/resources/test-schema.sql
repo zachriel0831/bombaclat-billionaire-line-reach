@@ -38,36 +38,6 @@ CREATE TABLE IF NOT EXISTS t_bot_user_info (
   CONSTRAINT uq_user_id UNIQUE (user_id)
 );
 
--- Structured stock ideas generated upstream from market analyses.
-CREATE TABLE IF NOT EXISTS t_trade_signals (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  signal_key VARCHAR(64) NOT NULL,
-  idempotency_key CHAR(40) NOT NULL,
-  analysis_id BIGINT NOT NULL,
-  analysis_date VARCHAR(16) NOT NULL,
-  analysis_slot VARCHAR(32) NOT NULL,
-  market VARCHAR(16) DEFAULT 'TW',
-  ticker VARCHAR(32) NOT NULL,
-  name VARCHAR(128),
-  signal_type VARCHAR(32) DEFAULT 'analysis_stock_watch',
-  strategy_type VARCHAR(32) DEFAULT 'watch',
-  direction VARCHAR(16) NOT NULL,
-  confidence VARCHAR(16),
-  entry_zone CLOB,
-  invalidation CLOB,
-  take_profit_zone CLOB,
-  holding_horizon VARCHAR(64),
-  rationale CLOB,
-  risk_notes CLOB,
-  source_event_ids CLOB,
-  status VARCHAR(24) DEFAULT 'pending_review',
-  raw_json CLOB,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT uq_trade_signal_key UNIQUE (signal_key),
-  CONSTRAINT uq_trade_signal_idempotency UNIQUE (idempotency_key)
-);
-
 CREATE TABLE IF NOT EXISTS t_macro_release_calendar (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   event_key CHAR(40) NOT NULL,
